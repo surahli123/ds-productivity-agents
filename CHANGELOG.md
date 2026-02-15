@@ -4,77 +4,66 @@ All notable changes to the DS Analysis Review Agent.
 
 ## [Unreleased]
 
-### v0.4.0 — Real-World Testing & Calibration Review (2026-02-15)
+### v0.4.0 — Calibration Sprint (2026-02-15)
 
-**Status:** In progress. 3 real-world tests completed. All 3 calibration perspectives collected (Engineer, PM, DS Lead). Awaiting owner synthesis and decision before implementation.
+**Status:** Calibration complete. Scoring system validated through 2 rounds. Extended validation pending.
 
-#### Added
-- `dev/test-fixtures/real/` — 12 real-world fixtures collected (gitignored):
-  meta-llm-bug-reports, rossmann-sales-prediction, vanguard-ab-test,
-  capstone-customer-churn, credit-card-churn-segmentation, tips-regression-analysis,
-  kaggle-house-prices-eda, kaggle-titanic-solutions, kaggle-ibm-churn-lowquality,
-  meta-posttreatment-variables, meta-llm-product-analytics, meta-asymmetric-experiments
-- `dev/test-results/2026-02-15-meta-llm-bug-reports-review.md` — full review output (18/100)
-- `dev/test-results/2026-02-15-vanguard-ab-test-full-review.md` — full review output (16/100)
-- `dev/test-results/2026-02-15-calibration-notes.md` — root cause analysis across 3 tests
-- `dev/test-results/2026-02-15-principal-ai-engineer-assessment.md` — scoring math diagnosis + diminishing returns proposal
-- `dev/reviews/2026-02-15-pm-lead-calibration-review.md` — 6 critiques, 4 proposed fixes
-- `dev/test-results/2026-02-15-ds-lead-assessment.md` — finding-by-finding audit, independent scoring, 6 proposed fixes
+#### Implemented (Phase 1 — P0 Fixes)
 
-#### Tested
-- 3/12 real-world fixtures tested (Meta blog 18/100, Rossmann 29/100, Vanguard 16/100)
-- All three scored far below expert intuition (expected range: 40-65)
-- Pipeline mechanics confirmed working: subagent dispatch, dimension separation, deduction table adherence, floor rules all correct
-- Findings are often genuinely insightful — the scoring is the problem, not the analysis quality
+- **Strength Credit System (Section 2b):** Added to SKILL.md. 8 analysis credits + 8 communication credits, capped at +25/dimension. Both subagent output formats updated with STRENGTH LOG section.
+- **CRITICAL Reclassification:** 3 communication CRITICALs demoted to MAJOR: missing TL;DR (-15→-10), no story arc (-12→-8), limitations absent (-12→-10). Eliminates false floor rule triggers.
+- **Diminishing Returns Curve:** Lead agent Step 9 rewritten. Formula: 100% up to 30 pts, 75% for 31-50, 50% for 51+. Prevents score cratering from deduction stacking.
+- **Severity Escalation Guard:** Added to SKILL.md Section 2 footer. Subagents cannot escalate beyond table-defined severity/deduction values.
+- **Score Breakdown:** Lead agent Step 10 output now shows `Raw deductions → Effective (DR) | Credits: +Z | Score: W` per dimension.
+- **Dispatch Payload Updated:** Lead agent Step 7 now instructs subagents to produce STRENGTH LOG and reference Section 2b.
 
-#### Identified (Calibration Issues — from 3 independent assessments)
-1. Scoring math saturates — additive deductions with no diminishing returns compress at ~15 findings
-2. CRITICAL over-assigned — structural issues (missing TL;DR, no story arc) treated same as analytical validity threats
-3. No strength credits — "What You Did Well" has zero impact on score, causing differentiation failure (Vanguard 16 vs Meta 18 when Vanguard is clearly better analytically)
-4. Cross-cutting issues double-count through different lenses
-5. Output too long and leads with negatives
-6. Genre-inappropriate findings (DS Lead: 6 of 15 Meta findings are wrong for a blog post)
-7. Too many findings generated (DS Lead: 15 findings per doc overwhelms scoring and user)
-8. 3 bugs in review output (severity/deduction mismatches, routing table violation)
+#### Calibrated (R2 Tuning)
 
-#### Three Assessment Summary
+- **Tightened DR Curve:** From 100/50/25 (R1) to 100/75/50 (R2) at 30/50 thresholds. R1 over-corrected; R2 brings scores into target range.
+- **Added "TL;DR completely absent" CRITICAL (-12):** Reinstated as the only communication CRITICAL. Distinct from "ineffective TL;DR" (MAJOR -10). Fires only when no summary exists anywhere in the document.
 
-| Perspective | Primary Fix | Strength Cap | CRITICAL Approach | Unique Insight |
+#### Calibration Results
+
+| Fixture | R0 | R1 | R2 (Final) | Updated Target |
 |---|---|---|---|---|
-| Principal AI Engineer | Diminishing returns formula | Not proposed | TL;DR + story arc → MAJOR | Correlated findings treated as independent |
-| PM Lead | Diminishing returns + strength credits | +15/dimension | + limitations → MAJOR | Tool has a communication problem itself |
-| DS Lead | Strength credits (primary) + diminishing returns (safety net) | +25/dimension | + recommendations → MAJOR | Finding quality matters, not just scoring math; cap at 8 total findings |
+| Vanguard A/B Test | 16 | 73 | **69** | 60-75 |
+| Meta LLM Bug Reports | 18 | 59 | **54** | 45-58 |
+| Rossmann Sales | 29 | 71 | **71** | 60-75 |
+| Differentiation gap | 2 pts | 14 pts | **15 pts** | 15+ |
+| CRITICALs per test | 2-5 | 0-1 | **1** | ≤2 |
 
-#### UX Decisions (Owner Approved)
-- Compress per-lens sections by default (1-2 sentences, full detail only in Top 3). No `--detail` flag — just make default output shorter.
-- Add emoji indicators to lens dashboard (SOUND -> ✅, MINOR -> ⚠️, MAJOR/CRITICAL -> ❌)
-- Rewrite examples in Top 3: use `> **✏️ Suggested rewrite:**` blockquote format. One format, no alternatives listed.
+Key outcome: System now differentiates correctly (15-point gap between best and worst analysis), assigns appropriate verdicts, and credits good analytical work.
 
-#### Synthesized — A3 Fix Plan + Calibration Loop Workflow (2026-02-15)
+#### Final Scoring Parameters
 
-- `dev/test-results/2026-02-15-calibration-fix-plan.md` — A3 Problem Analysis synthesizing all 3 role reviews:
-  - 4 consensus root causes (no strength credits, deduction stacking, CRITICAL over-assignment, teardown output)
-  - 5 disagreements surfaced with tradeoffs (credit cap, Meta target, finding cap, reclassification scope, CRITICAL gradation)
-  - 6 fixes in 2 phases with exact file paths and specific changes
-  - Projected score impact tables for each phase
-- `docs/plans/2026-02-15-calibration-loop-workflow.md` — Repeatable 8-task calibration loop:
-  - Fix → Test 3 fixtures → Write test notes → Write calibration notes → Compare to prior round → 3 role reviews (parallel) → A3 synthesis → Owner decision
-  - File-based state with `rN` round numbering (session-boundary safe)
-  - Quantitative acceptance criteria (score ranges, differentiation gaps, CRITICAL counts)
-  - Round checklist template, session management, estimated 1-3 rounds to converge
+| Parameter | Value |
+|---|---|
+| Diminishing returns curve | 100/75/50 at 30/50 thresholds |
+| Strength credit cap | +25 per dimension |
+| Communication CRITICALs | 1 entry: "TL;DR completely absent" (-12) |
+| Analysis CRITICALs | 3 entries: unstated assumption (-20), flawed methodology (-20), conclusion doesn't trace (-15) |
+| Severity escalation guard | Active |
 
-#### Owner Decisions (5/5 Resolved)
+#### Testing & Diagnosis Artifacts
+- `dev/test-results/2026-02-15-r1-calibration-notes.md` — R1 diagnosis (over-correction, DR too aggressive)
+- `dev/test-results/2026-02-15-r1-vs-r0-comparison.md` — R0→R1 score trajectory and fix impact
+- `dev/test-results/2026-02-15-r2-calibration-notes.md` — R2 final calibration notes (ACCEPTED)
+- `dev/test-results/2026-02-15-r1-*.md` and `r2-*.md` — Per-fixture review outputs from both rounds
+- `dev/decisions/ADR-003-calibration-approach.md` — Calibration architecture decision record
 
-| # | Decision | Choice |
-|---|---|---|
-| 1 | Strength credit cap | +25 per dimension |
-| 2 | Meta target score | 42-50 (Minor Fix) |
-| 3 | Finding volume cap | Cap at 10, defer to Phase 2 |
-| 4 | Severity escalation bug | Fix — prevent escalation beyond deduction table |
-| 5 | Diminishing returns | Yes, include in Phase 1 |
+#### Earlier in v0.4 (Discovery Phase)
+- 12 real-world fixtures collected in `dev/test-fixtures/real/`
+- 3 independent calibration assessments (Engineer, PM, DS Lead)
+- A3 fix plan synthesized: `dev/test-results/2026-02-15-calibration-fix-plan.md`
+- Calibration loop workflow: `docs/plans/2026-02-15-calibration-loop-workflow.md`
+- 5 owner decisions resolved (strength cap +25, Meta target 42-50, finding cap deferred, fix escalation bug, include DR)
+- UX decisions approved (emoji dashboard, compressed lens detail, blockquote rewrites) — deferred to P1
 
-#### Next Step
-Execute fix plan (Phase 1: strength credits, CRITICAL reclassification, diminishing returns, 2 bug fixes) → then start calibration loop Round 1 to validate fixes against 3 test fixtures.
+#### Remaining
+- Extended validation: untested fixtures, cross-run consistency, synthetic fixture rerun
+- P1: Output restructure (emoji dashboard, compressed lens detail, blockquote rewrites)
+- P1: Finding volume cap (10 max) — deferred to Phase 2
+- Web session feedback integration
 
 ### v0.3.0 — Implementation Complete (2026-02-15)
 

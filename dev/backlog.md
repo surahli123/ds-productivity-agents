@@ -10,82 +10,73 @@ Last updated: 2026-02-15
 - [x] Third real-world test: vanguard-ab-test (scored 16/100 — LOWER than Meta's 18 despite being a better analysis)
 - [x] Calibration notes written: `dev/test-results/2026-02-15-calibration-notes.md`
 - [x] Principal AI Engineer assessment: `dev/test-results/2026-02-15-principal-ai-engineer-assessment.md`
-  - Root cause: deduction stacking (correlated findings treated as independent)
-  - Proposed: diminishing returns formula + tighten CRITICAL definitions
 - [x] PM Lead review completed: `dev/reviews/2026-02-15-pm-lead-calibration-review.md`
-  - 6 critiques: broken scoring math, CRITICAL over-assignment, no strength credits,
-    cross-cutting double-counting, teardown-style output, no genre awareness
-  - 4 proposed fixes: diminishing returns, reclassify structural CRITICALs, strength
-    credits, output restructure
 - [x] DS Lead assessment completed: `dev/test-results/2026-02-15-ds-lead-assessment.md`
-  - Finding-by-finding audit of Meta review: 5 agree, 4 partial, 6 disagree (genre-inappropriate)
-  - Identified 3 bugs in review output (severity/deduction mismatches, cross-cutting double-count)
-  - Independent scores: Meta 52/100, Vanguard 45/100 (both Minor Fix)
-  - Key new insights: finding quality matters (not just scoring math), cap total findings at 8,
-    strength credits need +25 cap (not +15), genre affects which findings are generated
 - [x] UX decisions approved: compressed per-lens detail, emoji lens dashboard, highlighted rewrites
 - [x] 12 real-world fixtures collected in `dev/test-fixtures/real/`
-- [x] **All 3 calibration perspectives collected** — ready for owner synthesis and decision
-- [x] **A3 fix plan synthesized:** `dev/test-results/2026-02-15-calibration-fix-plan.md`
-  - Merged all 3 reviews into consensus/disagreement analysis
-  - 6 fixes in 2 phases (3 P0 + 3 P1) with exact file paths and changes
-  - 5 owner decisions identified (strength cap, Meta target, finding cap, reclassification, DR)
-- [x] **Calibration loop workflow planned:** `docs/plans/2026-02-15-calibration-loop-workflow.md`
-  - 8-task repeatable loop: fix → test → notes → compare → 3 role reviews → synthesize → decide
-  - File naming convention with round numbers (rN)
-  - Acceptance criteria defined (score ranges, differentiation gaps, CRITICAL counts)
-  - Estimated 1-3 rounds to converge
+- [x] All 3 calibration perspectives collected
+- [x] A3 fix plan synthesized: `dev/test-results/2026-02-15-calibration-fix-plan.md`
+- [x] Calibration loop workflow planned: `docs/plans/2026-02-15-calibration-loop-workflow.md`
+- [x] **All 5 owner decisions resolved** (see CHANGELOG for details)
+- [x] **P0: Strength Credits implemented** — Section 2b added to SKILL.md (+25 cap/dimension), STRENGTH LOG added to both subagent output formats, lead Step 9 updated
+- [x] **P0: CRITICALs reclassified** — 3 communication CRITICALs → MAJOR (missing TL;DR, no story arc, limitations absent). Added Severity Escalation Guard.
+- [x] **P0: Diminishing Returns implemented** — Lead Step 9 rewritten with DR formula + credits
+- [x] **P0: Severity escalation guard** — Subagents cannot escalate beyond deduction table values
+- [x] **Calibration R1 complete** — Scores: Vanguard 73, Meta 59, Rossmann 71 (over-corrected, all above targets)
+  - R1 notes: `dev/test-results/2026-02-15-r1-calibration-notes.md`
+  - Comparison: `dev/test-results/2026-02-15-r1-vs-r0-comparison.md`
+- [x] **R2 fix: Tightened DR curve** from 100/50/25 to 100/75/50
+- [x] **R2 fix: Added "TL;DR completely absent" CRITICAL (-12)** back to communication table
+- [x] **Calibration R2 complete — ACCEPTED** — Scores: Vanguard 69, Meta 54, Rossmann 71
+  - R2 notes: `dev/test-results/2026-02-15-r2-calibration-notes.md`
+  - Differentiation: 15 points (Vanguard vs Meta) — meets target
+  - CRITICALs: 1 per test — within ≤2 target
+  - All scores within updated target ranges
+- [x] ADR-003 created: `dev/decisions/ADR-003-calibration-approach.md`
 
-### To Do — Owner Decision Needed (5 Decisions Before Round 1)
-Owner must synthesize the 3 assessments (Engineer, PM, DS Lead) and decide on the
-calibration fix approach before implementation begins. Key decision points:
+### To Do — Extended Validation
+- [ ] **Review Airbnb Message Intent** (`dev/test-fixtures/airbnb-message-intent-classification.md`)
+  - Expected: Analysis 55-65/100, Communication 70-80/100
+  - Test: Can agent spot both strengths (CNN justification, error analysis) AND gaps (missing F1, no business impact)?
+  - Domain: NLP/ML classification (two-phase: LDA → CNN)
+- [ ] **Review Airbnb Future Value (FIV)** (`dev/test-fixtures/airbnb-future-value-tradeoffs.md`)
+  - Expected: Analysis 65-75/100, Communication 70-80/100
+  - Test: Different methodology (causal inference via PSM vs ML classification)
+  - Domain: Propensity score matching, counterfactual reasoning
+- [ ] **Review Netflix Proxy Metrics** (`dev/test-fixtures/netflix-proxy-metrics.md`)
+  - Expected: Analysis 60-70/100, Communication 65-75/100
+  - Test: Experimental design focus (metric selection, not model building)
+  - Domain: Statistical estimators (TC, JIVE, LIML), correlated measurement error
+  - Note: Shorter article (17KB) - may lack depth in some areas
+- [ ] Cross-run consistency: same doc 3x, verify scores within ±10
+- [ ] Rerun 2-3 synthetic fixtures to verify floor rules still work
+- [x] Web session independent rubric evaluation received and reviewed
+  - IC9 architect review: `dev/reviews/2026-02-15-ic9-architect-review-of-web-session.md`
+  - PM Lead review: `dev/reviews/2026-02-15-pm-lead-review-of-web-session.md`
+  - 5 of 6 fixes accepted, 1 deferred to v0.5
 
-1. **Strength credit cap:** PM says +15/dimension. DS Lead says +25/dimension. Which?
-2. **CRITICAL gradation:** Calibration notes propose CRITICAL-ABSENT vs CRITICAL-INCOMPLETE
-   split. DS Lead says just reclassify structural CRITICALs to MAJOR (simpler). Which approach?
-3. **Finding volume cap:** DS Lead proposes 8 total findings max. Others don't propose this.
-   Add it or not?
-4. **Diminishing returns:** Engineer and PM both propose it. DS Lead says it's a safety net,
-   not the primary fix. Still include it?
-5. **Meta target score:** Calibration notes say 20-35. DS Lead says 45-55. What's the target?
+### To Do — Web Session Fixes (Reviewed, Not Yet Implemented)
+- [ ] **P0: Duplicate-finding detection** — Add dedup rule to ds-review-lead.md Step 9 (NOT SKILL.md — subagents run in parallel). When findings share same root cause across dimensions, apply larger deduction only.
+- [ ] **P0: Formatting deduction -5 → -3** — SKILL.md Section 2, "Sloppy formatting / inconsistent polish"
+- [ ] **P1: Worked example credit (+3)** — Add to SKILL.md Section 2b Communication credits
+- [ ] **P1: Honest negative result credit (+3)** — Add to SKILL.md Section 2b Analysis credits
+- [ ] **P1: Tighten "Reports specific quantitative results" criteria** — Require contextualizing element (comparison, CI, benchmark)
+- [ ] **P1: Headings -3 → -2, unnecessary chart -3 → -2** — SKILL.md Section 2
+- [ ] **P1: Fix self-deliberation in communication-reviewer prompt** — Add single-pass commit instruction
 
-### To Do — Implementation (After Owner Decision)
-- [ ] **P0: Implement Strength Credits** (all 3 assessments agree this is needed)
-  - Credit table and cap TBD by owner decision
-  - Update lead agent synthesis (Step 9) + subagent output format (add STRENGTH LOG)
-- [ ] **P0: Reclassify CRITICALs** (all 3 assessments agree)
-  - Missing TL;DR: CRITICAL (-15) → MAJOR (-10)
-  - No story arc: CRITICAL (-12) → MAJOR (-8)
-  - Limitations absent: CRITICAL (-12) → MAJOR (-10)
-  - DS Lead adds: "No recommendations with owners" should never be CRITICAL
-  - Update SKILL.md Sections 1 and 2
-- [ ] **P0: Diminishing Returns** (Engineer + PM propose; DS Lead agrees as safety net)
-  - 0-30: 100%, 31-50: 50%, 51+: 25%
-  - Update lead agent synthesis (Step 9)
-- [ ] **P1: Reduce Finding Volume** (DS Lead proposal — pending owner decision)
-  - Cap at 8 total findings max (top 5 by severity + up to 3 MINOR)
-  - Subsume derivative findings under parent root cause
-- [ ] **P1: Output Restructure** (PM + DS Lead agree)
-  - Move "What You Did Well" before findings
+### To Do — P1 Items (Post-Calibration)
+- [ ] **P1: Output Restructure**
+  - Add emoji indicators to lens dashboard (✅/⚠️/❌)
   - Compress per-lens detail to 1-2 sentences
-  - Add emoji indicators to lens dashboard
-  - Add one-sentence review summary after score (DS Lead addition)
   - Use blockquote format for suggested rewrites
   - Update lead agent Step 10 output templates
-- [ ] **P1: Fix 3 Bugs Found in Audit** (DS Lead finding)
-  - Meta C7 Actionability: severity says CRITICAL but deduction is -8 (MAJOR). Fix consistency.
-  - Meta C5 Audience Fit: severity says MAJOR but deduction is -12 (CRITICAL). Fix consistency.
-  - Meta A3 + C5: "no limitations" flagged by both subagents. Routing table says comms owns it.
-- [ ] Create ADR-003 for calibration approach once owner confirms
-- [ ] Rerun 3 real-world tests to validate calibration
-  - Target ranges TBD by owner (see decision point #5)
-  - Acceptance test: clear tier separation with 15-25 point gap
-- [ ] Rerun synthetic fixtures to verify floor rules / dimension separation still work
-- [ ] Run 2-3 more untested real-world fixtures to confirm consistency
-- [ ] Verify cross-run consistency (same doc 3x, scores within +/- 10)
+- [ ] **P1: Reduce Finding Volume** — Cap at 10, defer implementation to Phase 2
 
 ### Deferred
 - Genre/format auto-detection — DS Lead recommends for v0.5 (affects finding generation, not just scoring)
+- Novel framework credit (+5) — Deferred to v0.5 (evidence from blog posts, not internal analyses; subjectivity risk at +5)
+- Communication dimension asymmetry (134 vs 101 deduction points) — Track for v0.5, design-level issue
+- Audience-weighted dimension averaging — v1.5 architecture change
 - CRITICAL-ABSENT vs CRITICAL-INCOMPLETE gradation — try reclassification first, add gradation if needed
 - Per-dimension deduction cap at -70 — diminishing returns makes this redundant
 - Cross-cutting deduction deduplication — diminishing returns partially addresses
