@@ -45,6 +45,7 @@ updating all three agent prompts.
 | Misrepresented source/benchmark | Completeness & Source Fidelity | MAJOR | -8 | "Industry average is X" but source says Y |
 | Missing obvious analysis | Completeness & Source Fidelity | MAJOR | -8 | Obvious follow-up question unaddressed |
 | Missing baseline/benchmark | Metrics | MAJOR | -10 | Metric reported without comparison point |
+| Experimental claims without statistical validation | Methodology & Assumptions | CRITICAL | -15 | A/B test reports observed lift or uses "significant" without p-value, confidence interval, or named statistical test. The presence of experimental structure (test/control, hypotheses) creates an expectation of validation; its absence misleads readers into trusting results that may be noise. |
 
 ### Communication Dimension
 
