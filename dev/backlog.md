@@ -25,7 +25,26 @@ Last updated: 2026-02-16
 
 **Result:** Repository successfully migrated to multi-agent platform structure. All changes committed and pushed to GitHub. See `dev/sessions/2026-02-16-multi-agent-platform-migration.md` for full details.
 
-## Current Sprint: v1.0 — Public Distribution (SHIPPED)
+---
+
+## Current Sprint: v1.1 — Multi-Agent Platform (COMPLETE)
+
+### Done — Platform Migration (2026-02-16)
+- [x] **Repository renamed** — `DS-Analysis-Review-Agent` → `ds-productivity-agents`
+- [x] **File reorganization complete** — `shared/skills/`, `agents/ds-review/`, placeholders for future agents
+- [x] **Documentation updated** — CLAUDE.md, README.md (rewritten), MEMORY.md, backlog.md
+- [x] **Path references updated** — 6 files updated to new structure
+- [x] **Migration artifacts created** — migration-plan.md, RENAME-STEPS.md, session logs
+- [x] **Domain knowledge design docs moved** — from Downloads to `docs/plans/` and `dev/sessions/`
+- [x] **All changes committed and pushed** — commits e695ccc, 7aa989f, 45e0172
+- [x] **CHANGELOG updated** — v1.1.0 entry added
+- [x] **Session log** — `dev/sessions/2026-02-16-multi-agent-platform-migration.md`
+
+**Outcome:** Repository is now a multi-agent platform ready for v0.5 (domain knowledge skill) and Q2 2026 agents (SQL review, metric analysis).
+
+---
+
+## Previous Sprint: v1.0 — Public Distribution (SHIPPED)
 
 ### Done — v1.0 Distribution (2026-02-15)
 - [x] **Distribution package created** — `dist/ds-analysis-review/` with standalone plugin structure
@@ -224,13 +243,34 @@ Last updated: 2026-02-16
 ## Backlog: v1.0 and Beyond
 
 ### v0.5: Domain Knowledge Dimension + Genre Awareness
-- [x] **Design doc v1 complete** — `docs/plans/2026-02-15-domain-knowledge-subagent-design.md`
-  - 3rd review dimension: domain expertise + claim verification (4 lenses)
-  - Architecture: parallel subagent, curated Confluence index + web search
-  - 13 design decisions finalized, Lens 4 (Claim Verification) marked provisional
-- [ ] **Web session review of design doc** — DS Lead critique pending
-- [ ] **Resolve open items** — Lens 4 scope, real Confluence page IDs, graceful degradation
-- [ ] **Architecture design session** — finalize design, transition to implementation plan
+
+**Design Complete — Ready to Implement**
+
+- [x] **Design doc v3 complete** — `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md`
+  - 3rd review dimension: domain expertise + claim verification (3 lenses, Lens 4 merged into Lens 2)
+  - **Architecture:** Standalone Domain Knowledge Skill (Layer 1) + Thin Domain Expert Reviewer (Layer 2)
+  - Layer 1: YAML index, team roster, digests, refresh pipeline, importance scoring, token budgeting
+  - Layer 2: 3 lenses, deduction tables, scoring rubric, calls Layer 1 for context
+  - 21 design decisions finalized, 8 gaps resolved in v3
+  - Weighted scoring: 50/25/25 (Analysis / Communication / Domain)
+  - ADVISORY severity level for recent learnings (-2 deduction cap)
+  - Two-tier digest system: foundational (monthly) + workstream (weekly)
+  - Deduplication: two-stage (heuristic + LLM fallback)
+  - Versioned digests with rollback support
+- [x] **Design session log** — `dev/sessions/2026-02-15-domain-knowledge-session-log.md`
+- [x] **Repository structure prepared** — `shared/skills/search-domain-knowledge/` ready for implementation
+
+**Next Steps (Implementation):**
+- [ ] Build `shared/skills/search-domain-knowledge/` per design doc v3
+  - Phase 1a: Domain Knowledge Skill (Layer 1) - YAML index, refresh pipeline, digest generation
+  - Phase 1b: Domain Expert Reviewer (Layer 2) - 3-lens rubric, authority-aware scoring
+  - Phase 1c: Integration with DS Review Lead - Step 6.5, weighted scoring, deduplication
+  - Phase 2: Test & Calibrate - 6 fixtures (3 core + 3 blog posts), recalibration rounds
+  - Phase 3: Polish - CHANGELOG, ADR, documentation
+- [ ] Create `agents/ds-review/domain-expert-reviewer.md`
+- [ ] Update `agents/ds-review/ds-review-lead.md` for 3-dimension scoring
+- [ ] Update `shared/skills/ds-review-framework/SKILL.md` with domain dimension rubrics
+- [ ] Calibration R4+: Test with domain dimension, adjust DR curve if needed
 - [ ] Evaluate whether recalibrated scores are reasonable across genres without format detection
 - [ ] If still off: design `--format` parameter or auto-detection (ADR needed)
 

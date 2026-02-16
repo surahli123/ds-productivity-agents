@@ -1,6 +1,87 @@
 # Changelog
 
-All notable changes to the DS Analysis Review Agent.
+All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent).
+
+## [1.1.0] — 2026-02-16
+
+### Multi-Agent Platform Migration
+
+**Status:** Complete. Repository reorganized as multi-agent platform.
+
+#### Repository Rebrand
+- **Repository name:** `DS-Analysis-Review-Agent` → `ds-productivity-agents`
+- **Project scope:** Single agent → Multi-agent platform
+- **Rationale:** Building 3 peer-level agents (DS review, SQL review, Search metric analysis) that share domain knowledge infrastructure
+
+#### File Reorganization
+- **Created `shared/skills/`** — Reusable infrastructure layer
+  - Moved `plugin/skills/ds-review-framework/` → `shared/skills/ds-review-framework/`
+- **Created `agents/`** — Agent implementations layer
+  - Moved `plugin/agents/*.md` → `agents/ds-review/*.md` (3 agent files)
+  - Created `agents/sql-review/` placeholder (Q2 2026)
+  - Created `agents/search-metric-analysis/` placeholder (Q2 2026)
+- **Updated all path references** across 6 files:
+  - `.claude/commands/ds-review.md`
+  - `agents/ds-review/ds-review-lead.md`
+  - `.claude/rules/plugin-conventions.md`
+  - Documentation files (CLAUDE.md, README.md, MEMORY.md)
+
+#### Documentation
+- **README.md** — Complete rewrite (172 lines)
+  - Multi-agent platform overview
+  - All 3 agents documented (DS review shipped, SQL review + metric analysis planned)
+  - Architecture diagram showing shared infrastructure pattern
+  - Professional GitHub presentation
+- **CLAUDE.md** — Updated for multi-agent scope
+  - Platform description with all 3 agents
+  - Updated agent architecture section
+  - All file paths updated to new structure
+- **MEMORY.md** — Updated for future sessions
+  - New project structure documented
+  - Key files paths updated
+  - Added migration-plan.md reference
+
+#### Migration Artifacts
+- `dev/migration-plan.md` (500 lines) — Comprehensive reorganization guide
+- `dev/RENAME-STEPS.md` — GitHub rename instructions
+- `dev/sessions/2026-02-16-multi-agent-platform-migration.md` — Full session log
+- `dev/sessions/2026-02-16-repository-architecture-discussion.md` — Design discussion log
+- `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md` — v0.5 design spec (moved from Downloads)
+
+#### Architecture
+
+**Three-Agent Platform:**
+```
+Shared Skills Layer:
+├── ds-review-framework (current)
+└── search-domain-knowledge (v0.5)
+
+Agent Layer:
+├── DS Review (v1.0) - domain-agnostic analysis reviewer
+├── SQL Review (Q2 2026) - domain-agnostic SQL checker with pluggable domain guidance
+└── Search Metric Analysis (Q2 2026) - metric analysis + calls DS review for quality gate
+```
+
+**Key relationships:**
+- All agents share `search-domain-knowledge` skill for consistent domain expertise
+- Metric Analysis agent calls DS Review agent as quality gate
+- DS Review and SQL Review are domain-agnostic with pluggable domain knowledge skills
+
+#### Git History
+- All file moves executed via `git mv` (history preserved)
+- 3 commits: file reorganization, documentation updates, session logs
+- Final commit: `45e0172`
+
+#### Breaking Changes
+- **File paths:** All `plugin/agents/` → `agents/ds-review/`, all `plugin/skills/` → `shared/skills/`
+- **Repository URL:** `github.com/surahli123/ds-productivity-agents` (GitHub redirects old URLs)
+
+#### Non-Breaking
+- `/ds-review` command still works (paths updated internally)
+- All skills load correctly
+- No functionality changes (pure reorganization)
+
+---
 
 ## [1.0.0] — 2026-02-15
 
