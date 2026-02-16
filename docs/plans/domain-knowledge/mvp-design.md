@@ -2,7 +2,7 @@
 
 **Date:** 2026-02-16
 **Status:** Approved — ready for implementation planning
-**Parent spec:** `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md`
+**Parent spec:** `docs/plans/domain-knowledge/design-v3.md`
 **Purpose:** MVP-scoped design adjustments to make Layer 1 feasible and immediately useful
 
 ---

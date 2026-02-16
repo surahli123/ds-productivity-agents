@@ -12,7 +12,7 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 #### Design Artifacts Created
 
-**v3 Design Spec** — `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md`
+**v3 Design Spec** — `docs/plans/domain-knowledge/design-v3.md`
 - 914 lines, 21 design decisions finalized
 - 3-layer architecture: Domain Knowledge Skill → Domain Expert Reviewer → Lead Integration
 - 3 review lenses: Terminology Accuracy, Methodological Alignment, Domain-Specific Standards
@@ -22,7 +22,7 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 - Two-stage deduplication: heuristic + LLM fallback
 - Versioned digests with rollback support
 
-**MVP Design Doc** — `docs/plans/2026-02-16-domain-knowledge-mvp-design.md`
+**MVP Design Doc** — `docs/plans/domain-knowledge/mvp-design.md`
 - PM-led design review resolving 5 implementation challenges (A1-A5)
 - A1: Reframed API as file contract + refresh workflow (no callable code)
 - A2: Audience-tagged sections (`all`, `ds`, `eng`) + token budget increased 5K → 8K
@@ -30,7 +30,7 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 - A4: Dropped team roster (LLM content scoring sufficient for v0.5)
 - A5: Cross-domain gets additive 1,500-token budget (not shared with domain budgets)
 
-**Layer 1 Implementation Plan** — `docs/plans/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
+**Layer 1 Implementation Plan** — `dev/internal/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
 - 5 tasks, all file creation (markdown + YAML, no scripts)
 - Files: domain-index.yaml, SKILL.md contract, 3 digest files (ranking, QU, cross-domain)
 - Includes full file contents, validation steps, and commit strategy
@@ -116,7 +116,7 @@ Layer 3 — Lead Agent Integration (future)
 - `dev/RENAME-STEPS.md` — GitHub rename instructions
 - `dev/sessions/2026-02-16-multi-agent-platform-migration.md` — Full session log
 - `dev/sessions/2026-02-16-repository-architecture-discussion.md` — Design discussion log
-- `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md` — v0.5 design spec (moved from Downloads)
+- `docs/plans/domain-knowledge/design-v3.md` — v0.5 design spec
 
 #### Architecture
 
@@ -274,7 +274,7 @@ Agent Layer:
 - **Explicit Unicode lookup table** in lead agent Step 10 — prevents LLM from substituting markdown shortcodes (`:x:`, `:warning:`)
 - **Verdict line emoji** — `✅ Good to Go | ⚠️ Minor Fix | ❌ Major Rework`
 - **Quick mode status table** — `✅ Pass / ⚠️ Issues Found / ❌ Critical Issues`
-- **Design doc:** `docs/plans/2026-02-15-emoji-dashboard-design.md`
+- **Design doc:** `dev/internal/2026-02-15-emoji-dashboard-design.md`
 - **3 UX reviews:** Principal AI Engineer, PM Lead, DS Lead — all approved with concerns, 3 quick fixes applied
 - **Verified** in both full and quick mode — 100% Unicode emoji rendering
 
@@ -339,7 +339,7 @@ Key outcome: System now differentiates correctly (15-point gap between best and 
 - 12 real-world fixtures collected in `dev/test-fixtures/real/`
 - 3 independent calibration assessments (Engineer, PM, DS Lead)
 - A3 fix plan synthesized: `dev/test-results/2026-02-15-calibration-fix-plan.md`
-- Calibration loop workflow: `docs/plans/2026-02-15-calibration-loop-workflow.md`
+- Calibration loop workflow: `dev/internal/2026-02-15-calibration-loop-workflow.md`
 - 5 owner decisions resolved (strength cap +25, Meta target 42-50, finding cap deferred, fix escalation bug, include DR)
 - UX decisions approved (emoji dashboard, compressed lens detail, blockquote rewrites) — deferred to P1
 
@@ -417,7 +417,7 @@ Key outcome: System now differentiates correctly (15-point gap between best and 
 **Status:** Complete. Implementation plan Rev 3 ready. Agent prompts written. Execution pending in fresh session.
 
 #### Added
-- Implementation plan (`docs/plans/2026-02-14-implementation-plan.md`, Rev 1→3)
+- Implementation plan (`dev/internal/2026-02-14-implementation-plan.md`, Rev 1→3)
   - 8 tasks: auto_activate validation, SKILL.md, prompt validation, command, plugin.json, 8 fixtures, smoke test, wrap-up
   - Self-contained plan with full SKILL.md content embedded
   - IC8 Engineering Lead review conducted — 3 Critical + 5 Major issues identified and fixed
@@ -431,7 +431,7 @@ Key outcome: System now differentiates correctly (15-point gap between best and 
 **Status:** Complete. Architecture approved.
 
 #### Added
-- Architecture design document (`docs/plans/2026-02-14-architecture-design.md`, Rev 4)
+- Architecture design document (`docs/plans/ds-analysis-review/architecture-design.md`, Rev 4)
   - 13 consolidated architecture decisions
   - System data flow with 3-agent parallel dispatch
   - Token budget model calibrated to 200K context window

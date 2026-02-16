@@ -86,7 +86,7 @@ Last updated: 2026-02-16
 - [x] 12 real-world fixtures collected in `dev/test-fixtures/real/`
 - [x] All 3 calibration perspectives collected
 - [x] A3 fix plan synthesized: `dev/test-results/2026-02-15-calibration-fix-plan.md`
-- [x] Calibration loop workflow planned: `docs/plans/2026-02-15-calibration-loop-workflow.md`
+- [x] Calibration loop workflow planned: `dev/internal/2026-02-15-calibration-loop-workflow.md`
 - [x] **All 5 owner decisions resolved** (see CHANGELOG for details)
 - [x] **P0: Strength Credits implemented** — Section 2b added to SKILL.md (+25 cap/dimension), STRENGTH LOG added to both subagent output formats, lead Step 9 updated
 - [x] **P0: CRITICALs reclassified** — 3 communication CRITICALs → MAJOR (missing TL;DR, no story arc, limitations absent). Added Severity Escalation Guard.
@@ -179,7 +179,7 @@ Last updated: 2026-02-16
 
 ### Done — Emoji Dashboard (2026-02-15)
 - [x] **P1: Emoji severity indicators (Phase 1)** — 4-tier mapping added to lens dashboard, findings, top 3 fixes, verdict line
-  - Design doc: `docs/plans/2026-02-15-emoji-dashboard-design.md`
+  - Design doc: `dev/internal/2026-02-15-emoji-dashboard-design.md`
   - 3 UX reviews (Principal AI Engineer, PM Lead, DS Lead) — all approved
   - Verified in both full and quick mode
   - Merged to main via PR #1
@@ -247,7 +247,7 @@ Last updated: 2026-02-16
 **Design & Planning Complete — Ready to Implement Layer 1**
 
 #### Done — Design (2026-02-15 to 2026-02-16)
-- [x] **Design doc v3 complete** — `docs/plans/2026-02-15-domain-knowledge-subagent-design-v3.md`
+- [x] **Design doc v3 complete** — `docs/plans/domain-knowledge/design-v3.md`
   - 3rd review dimension: domain expertise + claim verification (3 lenses, Lens 4 merged into Lens 2)
   - **Architecture:** Standalone Domain Knowledge Skill (Layer 1) + Thin Domain Expert Reviewer (Layer 2)
   - Layer 1: YAML index, digests, refresh pipeline, importance scoring, token budgeting
@@ -258,11 +258,11 @@ Last updated: 2026-02-16
   - Two-tier digest system: foundational (monthly) + workstream (weekly)
   - Deduplication: two-stage (heuristic + LLM fallback)
   - Versioned digests with rollback support
-- [x] **MVP design review** — `docs/plans/2026-02-16-domain-knowledge-mvp-design.md`
+- [x] **MVP design review** — `docs/plans/domain-knowledge/mvp-design.md`
   - 5 challenges resolved (A1-A5): file contract, audience tags, manual refresh, no roster, additive cross-domain budget
   - Token budget: 8K/domain + 1.5K cross-domain (additive)
   - search-infra deferred (least useful for DS review MVP)
-- [x] **Layer 1 implementation plan** — `docs/plans/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
+- [x] **Layer 1 implementation plan** — `dev/internal/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
   - 5 tasks: domain-index.yaml, SKILL.md contract, 3 digest files
   - Full file contents specified, validation steps, commit strategy
   - Markdown + YAML only, no scripts or dependencies
@@ -270,7 +270,7 @@ Last updated: 2026-02-16
 - [x] **Repository structure prepared** — `shared/skills/search-domain-knowledge/` ready for implementation
 
 #### Next — Layer 1 Implementation (next session)
-- [ ] Execute Layer 1 plan: `docs/plans/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
+- [ ] Execute Layer 1 plan: `dev/internal/2026-02-16-domain-knowledge-layer1-implementation-plan.md`
   - Task 1: domain-index.yaml (curated YAML index, 2 sub-domains + cross-domain)
   - Task 2: SKILL.md (digest format contract, consumption guide, staleness rules)
   - Task 3: search-ranking.md digest (foundational knowledge + workstream placeholders)
@@ -307,6 +307,6 @@ Last updated: 2026-02-16
 - [ ] Agent Studio deployment for non-technical users
 
 ## Notes
-- Architecture doc: `docs/plans/2026-02-14-architecture-design.md` (Rev 4)
-- Implementation plan: `docs/plans/2026-02-14-implementation-plan.md` (Rev 3)
+- Architecture doc: `docs/plans/ds-analysis-review/architecture-design.md` (Rev 4)
+- Implementation plan: `dev/internal/2026-02-14-implementation-plan.md` (Rev 3)
 - Implementation order: Tasks 0-5 parallel → Task 6 smoke test → Task 7 wrap-up
