@@ -1,6 +1,6 @@
 # Development Backlog
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 
 ## Current Sprint: v1.0 — Public Distribution (SHIPPED)
 
@@ -127,12 +127,20 @@ Last updated: 2026-02-15
 - [x] **P1: Fix self-deliberation** — communication-reviewer Rule 12: single-pass evaluation
 - [x] **P1: Finding volume cap (10 max)** — Lead Step 9 item 8. Score uses all findings, display capped.
 
+### Done — Emoji Dashboard (2026-02-15)
+- [x] **P1: Emoji severity indicators (Phase 1)** — 4-tier mapping added to lens dashboard, findings, top 3 fixes, verdict line
+  - Design doc: `docs/plans/2026-02-15-emoji-dashboard-design.md`
+  - 3 UX reviews (Principal AI Engineer, PM Lead, DS Lead) — all approved
+  - Verified in both full and quick mode
+  - Merged to main via PR #1
+
 ### To Do — P1 Items (Post-Calibration)
-- [ ] **P1: Output Restructure**
-  - Add emoji indicators to lens dashboard (✅/⚠️/❌)
+- [ ] **P1: Output Restructure — Phase 2** (from UX reviewer feedback)
   - Compress per-lens detail to 1-2 sentences
   - Use blockquote format for suggested rewrites
-  - Update lead agent Step 10 output templates
+  - Dashboard-to-findings navigation (cross-references)
+  - "What You Did Well" visual treatment
+  - Effort-based finding grouping
 
 ### Deferred
 - Genre/format auto-detection — DS Lead recommends for v0.5 (affects finding generation, not just scoring)

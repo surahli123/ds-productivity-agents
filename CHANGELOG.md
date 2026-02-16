@@ -30,9 +30,9 @@ All notable changes to the DS Analysis Review Agent.
 
 ## [Unreleased]
 
-### v0.4.1 — Credit Redesign + R3 Calibration (2026-02-15)
+### v0.4.1 — Credit Redesign + R3 Calibration + Emoji Dashboard (2026-02-15)
 
-**Status:** R3 calibration complete. R4 fixes identified. Ready for plugin registration.
+**Status:** Merged to main via PR #1. R4 calibration pending.
 
 **Problem:** R2 rank order wrong — Rossmann 71, Vanguard 69, Meta 54. Correct order: Rossmann > Meta > Vanguard. Root cause: analysis credit table was experiment-biased, awarding Vanguard +22 for unvalidated experimental scaffolding while Meta's deployed system earned +0.
 
@@ -113,6 +113,17 @@ All notable changes to the DS Analysis Review Agent.
 **Secondary fix (if R4 still high):** Increase 2-3 MAJOR deductions by +2 each
 
 **Recommendation:** System is production-ready for plugin registration. Score recalibration can wait until R4.
+
+#### Emoji Dashboard (2026-02-15)
+
+- **4-tier emoji severity indicators** — Added to lens dashboard, finding headers, top 3 fixes, and verdict line
+  - ✅ SOUND, ⚠️ MINOR, 🔴 MAJOR, ❌ CRITICAL
+- **Explicit Unicode lookup table** in lead agent Step 10 — prevents LLM from substituting markdown shortcodes (`:x:`, `:warning:`)
+- **Verdict line emoji** — `✅ Good to Go | ⚠️ Minor Fix | ❌ Major Rework`
+- **Quick mode status table** — `✅ Pass / ⚠️ Issues Found / ❌ Critical Issues`
+- **Design doc:** `docs/plans/2026-02-15-emoji-dashboard-design.md`
+- **3 UX reviews:** Principal AI Engineer, PM Lead, DS Lead — all approved with concerns, 3 quick fixes applied
+- **Verified** in both full and quick mode — 100% Unicode emoji rendering
 
 #### Earlier Commits
 
