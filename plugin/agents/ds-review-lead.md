@@ -123,7 +123,19 @@ again." Malformed output: parse what is usable; if score missing, recompute from
 
 1. Collect per-lens ratings, findings, STRENGTH LOGs, and DEDUCTION LOGs from both subagents.
 2. Build lens dashboard (8-row table: Dimension | Lens | Rating).
-3. **Recompute dimension scores using diminishing returns + strength credits:**
+3. **Duplicate suppression:** Compare findings across both dimensions. When two findings share
+   the same root cause — meaning the same remediation would resolve both AND the findings
+   describe the same observable problem (not merely related problems with a shared fix) —
+   keep the larger deduction and suppress the smaller one. Note suppressed findings in the
+   output as "subsumed by [dimension] finding [#X]."
+   Findings in different dimensions that address different harms — such as a methodology gap
+   (analysis) and a reader actionability gap (communication) — both stand even when a single
+   fix would address them, because they provide independently useful feedback to the author.
+   Adjust the affected dimension's raw deduction total before applying DR in the next step.
+   Example: "No limitations section" appears as Audience Fit Finding #4 (-10) and Actionability
+   Finding #7 (-5). Same root cause, same observable problem → keep -10, suppress -5, reduce
+   Actionability raw deductions by 5.
+4. **Recompute dimension scores using diminishing returns + strength credits:**
    For each dimension, take the subagent's raw total deductions and apply diminishing returns:
    - First 30 points of deductions: apply at 100% (effective = raw)
    - Points 31-50: apply at 75% (effective = 30 + (raw - 30) × 0.75)
@@ -132,33 +144,47 @@ again." Malformed output: parse what is usable; if score missing, recompute from
    **dimension_score = 100 - effective_deductions + credits** (minimum 0, maximum 100)
    If the subagent's declared score differs from this calculation, use THIS calculation.
    Show the math: `Raw deductions: X → Effective (DR): Y | Credits: +Z | Score: W`
-4. Compute final score: (analysis_score + communication_score) / 2, rounded to nearest integer.
+5. Compute final score: (analysis_score + communication_score) / 2, rounded to nearest integer.
    One subagent failed: use surviving score only.
-5. Apply floor rules: any CRITICAL caps verdict at Minor Fix (max 79); 2+ CRITICAL caps at
+6. Apply floor rules: any CRITICAL caps verdict at Minor Fix (max 79); 2+ CRITICAL caps at
    Major Rework (max 59). Floor rules affect verdict only, not the numeric score.
-6. Select top 3 priority fixes across both dimensions (rank by severity, then deduction size).
-7. Select 2-3 positives (at least 1 from each dimension if both succeeded). Draw from STRENGTH
+7. Select top 3 priority fixes across both dimensions (rank by severity, then deduction size).
+8. Cap displayed findings at 10 total across both dimensions. Rank all findings by severity
+   (CRITICAL first, then MAJOR by deduction size, then MINOR). If more than 10 findings exist,
+   show only the top 10 in the per-dimension output sections. Add a note after the findings:
+   "*[N] additional lower-severity findings were identified. The score reflects all findings.*"
+   Scoring always uses ALL findings — the cap is for output readability only.
+9. Select 2-3 positives (at least 1 from each dimension if both succeeded). Draw from STRENGTH
    LOGs and POSITIVE FINDINGS — strengths should feel substantive, not generic.
-8. Cross-cutting issues: if a finding from one dimension implies impact in the other, note the
-   cross-cutting impact in the top 3 narrative. Do NOT create duplicate findings.
+10. Cross-cutting issues: if a finding from one dimension implies impact in the other, note the
+   cross-cutting impact in the top 3 narrative. Duplicate findings were already suppressed in step 3.
 
 # Step 10: Produce Output
 
+**Emoji Severity Map** (use these exact Unicode characters — never use markdown shortcodes like `:x:` or `:warning:`):
+- ✅ = SOUND / Good to Go / Pass
+- ⚠️ = MINOR
+- 🔴 = MAJOR
+- ❌ = CRITICAL / Major Rework
+
 **Full Mode Output** (in this order):
 1. `# DS Analysis Review: [Document Title]`
-2. `**Score: [X]/100 — [Good to Go | Minor Fix | Major Rework]**` + floor rule explanation if applied
+2. `**Score: [X]/100 — [✅ Good to Go | ⚠️ Minor Fix | ❌ Major Rework]**` + floor rule explanation if applied
 3. Score breakdown: `Analysis: [X]/100 (deductions: [raw]→[effective DR] | credits: +[Z]) | Communication: [X]/100 (deductions: [raw]→[effective DR] | credits: +[Z])`
 4. Metadata line: Mode | Audience | Workflow | Tier [N] | [word count] words | ~[X] min read
-5. Lens Dashboard — 8-row table with columns: Dimension | Lens | Rating
-6. `## Top 3 Priority Fixes` — each numbered with: title (severity), location, issue (2-3 sentences), suggested fix
+5. Lens Dashboard — 8-row table with columns: Dimension | Lens | Rating.
+   Prefix each Rating with its emoji: ✅ SOUND, ⚠️ MINOR ISSUES, 🔴 MAJOR ISSUES, ❌ CRITICAL.
+6. `## Top 3 Priority Fixes` — each numbered with: emoji + title (severity), location, issue (2-3 sentences), suggested fix.
+   Use severity emoji prefix: ❌ CRITICAL, 🔴 MAJOR, ⚠️ MINOR.
 7. `## What You Did Well` — 2-3 specific positives with explanation
-8. `## Analysis Dimension (Score: [X]/100)` — each lens with rating and findings or "No issues found"
-9. `## Communication Dimension (Score: [X]/100)` — same format
+8. `## Analysis Dimension (Score: [X]/100)` — each lens with emoji-prefixed rating and top findings (capped per Step 9 volume limit) or "No issues found".
+   Finding headers use emoji severity badge: `**Finding N: Title** (❌ CRITICAL, -X)`.
+9. `## Communication Dimension (Score: [X]/100)` — same format. If findings were capped, show the note from Step 9.
 
 **Quick Mode Output:**
 1. Title + score + verdict (same as Full)
 2. Metadata (Mode: Quick)
-3. Status — 2-row table: Dimension | Status (Pass / Issues Found / Critical Issues)
+3. Status — 2-row table: Dimension | Status (✅ Pass / ⚠️ Issues Found / ❌ Critical Issues)
 4. `## Top 3 Priority Fixes` (same format)
 5. `## What You Did Well` (same)
 6. Footer: *Run `/ds-review:review --mode full` for per-lens ratings and detailed findings.*

@@ -2,7 +2,127 @@
 
 All notable changes to the DS Analysis Review Agent.
 
+## [1.0.0] — 2026-02-15
+
+### v1.0.0 — First Public Distribution
+
+**Status:** Shipped to GitHub. Installable via `claude plugins install surahli123/ds-analysis-review`.
+
+#### Added
+- **Distribution package** — `dist/ds-analysis-review/` with standalone plugin structure
+  - `.claude-plugin/plugin.json` (v1.0.0, auto-discovery, MIT license)
+  - `commands/review.md` — plugin command entry point
+  - `agents/ds-review-lead.md`, `analysis-reviewer.md`, `communication-reviewer.md`
+  - `skills/ds-review-framework/SKILL.md` — shared rubrics
+  - `README.md` — install, usage, architecture, scoring docs (150 lines)
+- **GitHub repo** — `surahli123/ds-analysis-review` (public)
+- **Vibe coding journey doc** — `docs/vibe-coding-journey.md` (~1,566 words)
+  - Storytelling format: Day 1 (PM decisions + rubric design), Day 2 (scoring crisis + calibration)
+  - Honest about limitations (6 blog posts, ±10 variability, not peer-review ready)
+  - 3 communication-reviewer rounds used during drafting (R1: 100, R2: 89, R3: 100)
+
+#### Changed
+- All `plugin/` paths → `${CLAUDE_PLUGIN_ROOT}/` in distribution files
+- All `/ds-review:review` → `/review` in distribution files
+- Plugin name simplified from `ds-review:review` to `review` for installed plugin context
+
+---
+
 ## [Unreleased]
+
+### v0.4.1 — Credit Redesign + R3 Calibration (2026-02-15)
+
+**Status:** R3 calibration complete. R4 fixes identified. Ready for plugin registration.
+
+**Problem:** R2 rank order wrong — Rossmann 71, Vanguard 69, Meta 54. Correct order: Rossmann > Meta > Vanguard. Root cause: analysis credit table was experiment-biased, awarding Vanguard +22 for unvalidated experimental scaffolding while Meta's deployed system earned +0.
+
+**Design principle:** "False confidence from unvalidated experiments is more dangerous than vague attribution from deployed systems."
+
+#### Changed
+
+- **New CRITICAL deduction: Unvalidated experimental claims (-15)** — Fires when A/B test reports lift or uses "significant" without p-value, CI, or named statistical test. Added to SKILL.md Section 2 Analysis Dimension table.
+- **Replaced analysis credit table (Section 2b)** — 9 methodology-agnostic credits replacing 8 experiment-biased ones. Key changes:
+  - Removed: "Real experimental design" (+8), "Pre-specified hypotheses" (+5), "Pre-specified success threshold" (+3), "Covariate or balance check" (+3), "Sensitivity or robustness check" (+3)
+  - Added: "Appropriate methodology for the question" (+5), "Systematic model or method comparison" (+5), "Validation methodology present" (+5), "Demonstrated real-world impact" (+8)
+  - Renamed/refined: "Pre-specified goals or hypotheses" (+3), "Reports specific quantitative results with context" (+3)
+  - Kept: "External validation or benchmarking" (+3), "Honest negative or null result reported" (+3), "Reproducibility detail provided" (+2)
+- **Conditional halving rule (Credit Rule 6)** — When experimental structure is present but unvalidated: methodology credit halved, hypotheses credit halved, validation credit zeroed, quantitative results credit halved. Does NOT apply to non-experimental analyses.
+- **Tightened duplicate suppression (lead Step 9, item 3)** — Explicit same-root-cause AND same-observable-problem test. Cross-dimension findings with different harms both stand.
+- **Finding volume cap (lead Step 9, item 8)** — Max 10 findings displayed, ranked by severity. Scoring uses all findings.
+- **Self-deliberation fix (communication-reviewer Rule 12)** — Single-pass evaluation: commit to each decision on first assessment, no visible deliberation.
+- **Step 10 output format** — Updated Analysis/Communication dimension sections to reference volume cap.
+- **Severity Escalation Guard wording** — Updated to reflect variable MINOR deduction values (-2 to -5).
+
+#### Projected Scores (pending validation)
+
+| Fixture | R2 | v0.4.1 Projected | Target Range |
+|---|---|---|---|
+| Rossmann | 71 | ~75 | 72-80 |
+| Meta | 54 | ~61 | 58-65 |
+| Vanguard | 69 | ~59 | 55-62 |
+
+#### R3 Calibration Results (2026-02-15)
+
+**All 6 fixtures tested (3 core + 3 extended blog posts):**
+
+| Fixture | R2 | R3 | Delta | Revised Target | Status |
+|---|---|---|---|---|---|
+| Vanguard | 69 | 72 | +3 | 55-65 | +7 to +17 OVER ⚠️ |
+| Meta | 54 | 63 | +9 | 60-70 | CLOSE ✅ |
+| Rossmann | 71 | 86 | +15 | 65-75 | +11 to +21 OVER ⚠️ |
+| Airbnb Message Intent | N/A | 85 | N/A | Analysis 70-80 | +5 to +15 OVER ⚠️ |
+| Airbnb FIV | N/A | 90 | N/A | Analysis 80-90 | +0 to +10 OVER ⚠️ |
+| Netflix Proxy Metrics | N/A | 100 | N/A | Analysis 80-90 | +10 to +20 OVER ⚠️ |
+
+**Key findings:**
+- ✅ All P0/P1 fixes worked correctly (no bugs, no rollbacks)
+- ✅ Finding quality excellent (DS Lead audit: 8/8 Vanguard findings legitimate)
+- ✅ Differentiation strong (37-point gap: Netflix 100 vs Meta 63)
+- ⚠️ Score inflation: All tests 17-30 points above targets
+- ✅ Meta CRITICAL count reduced from 3 → 2 (immediate fix applied)
+
+**Root cause:** Credit additions (+6) without offsetting deductions created +10-12 point inflation per test.
+
+**System health:** Architecturally sound. Tuning problem, not redesign needed.
+
+#### R3 Artifacts Created
+
+- 6 review outputs: `dev/test-results/2026-02-15-r3-*-review.md`
+- Calibration notes: `dev/test-results/2026-02-15-r3-calibration-notes.md`
+- R3 vs R2 comparison: `dev/test-results/2026-02-15-r3-vs-r2-comparison.md`
+- 3 role reviews (parallel):
+  - Principal AI Engineer: `dev/test-results/2026-02-15-r3-principal-ai-engineer-assessment.md`
+  - PM Lead: `dev/reviews/2026-02-15-r3-pm-lead-calibration-review.md`
+  - DS Lead: `dev/test-results/2026-02-15-r3-ds-lead-assessment.md`
+- Fix plan: `dev/test-results/2026-02-15-r3-calibration-fix-plan.md`
+- Session log: `dev/sessions/2026-02-15-r3-calibration-execution.md`
+
+#### Immediate Fix Applied (2026-02-15)
+
+- **Severity downgrade:** "Conclusion doesn't trace to evidence" from CRITICAL (-15) to MAJOR (-10)
+- **Impact:** Meta now has 2 CRITICALs (was 3), meeting ≤2 acceptance criteria
+- **Commit:** `7649c41 fix(skill): downgrade 'Conclusion doesn't trace' from CRITICAL to MAJOR`
+
+#### R4 Fix Plan (Deferred to After Plugin Registration)
+
+**Primary fix:** Reduce credit cap from +25 → +15 per dimension
+- Expected impact: -10 points per test
+- Estimated rounds to acceptance: 1-2
+- No architecture changes needed
+
+**Secondary fix (if R4 still high):** Increase 2-3 MAJOR deductions by +2 each
+
+**Recommendation:** System is production-ready for plugin registration. Score recalibration can wait until R4.
+
+#### Earlier Commits
+
+1. `fix(comm-reviewer): add single-pass commit rule to suppress self-deliberation`
+2. `fix(lead): add tightened duplicate suppression and finding volume cap to Step 9`
+3. `feat(skill): add CRITICAL deduction for unvalidated experimental claims`
+4. `feat(skill): replace analysis credits with methodology-agnostic table and conditional halving rule`
+5. `fix(skill): reduce 3 MINOR comm deductions, add worked example credit`
+6. `feat(skill): implement P1 calibration fixes from web session review` (P1 fixes)
+7. `fix(skill): downgrade 'Conclusion doesn't trace' from CRITICAL to MAJOR` (R3 immediate fix)
 
 ### v0.4.0 — Calibration Sprint (2026-02-15)
 

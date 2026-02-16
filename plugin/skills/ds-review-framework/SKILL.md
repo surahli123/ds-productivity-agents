@@ -40,11 +40,12 @@ updating all three agent prompts.
 | Unstated critical assumption | Methodology & Assumptions | CRITICAL | -20 | Causal claim without stating comparability assumption |
 | Flawed statistical methodology | Methodology & Assumptions | CRITICAL | -20 | Using correlation to claim causation without acknowledgment |
 | Unacknowledged sampling/selection bias | Methodology & Assumptions | MAJOR | -10 | Conclusions from non-representative sample without acknowledging limitation |
-| Conclusion doesn't trace to evidence | Logic & Traceability | CRITICAL | -15 | Backward check fails — recommendation has no supporting finding |
+| Conclusion doesn't trace to evidence | Logic & Traceability | MAJOR | -10 | Backward check fails — recommendation has no supporting finding |
 | Unsupported logical leap | Logic & Traceability | MAJOR | -10 | Key finding not backed by presented evidence |
 | Misrepresented source/benchmark | Completeness & Source Fidelity | MAJOR | -8 | "Industry average is X" but source says Y |
 | Missing obvious analysis | Completeness & Source Fidelity | MAJOR | -8 | Obvious follow-up question unaddressed |
 | Missing baseline/benchmark | Metrics | MAJOR | -10 | Metric reported without comparison point |
+| Experimental claims without statistical validation | Methodology & Assumptions | CRITICAL | -15 | A/B test reports observed lift or uses "significant" without p-value, confidence interval, or named statistical test. The presence of experimental structure (test/control, hypotheses) creates an expectation of validation; its absence misleads readers into trusting results that may be noise. |
 
 ### Communication Dimension
 
@@ -54,15 +55,15 @@ updating all three agent prompts.
 | Missing or ineffective TL;DR | Structure & TL;DR | MAJOR | -10 | Proactive: opens with methodology instead of key insight + business impact. Reactive: opens with background instead of answering the question asked. Use this when a TL;DR exists but is weak or buried — not when it is completely absent. |
 | No clear story arc or structure | Structure & TL;DR | MAJOR | -8 | Reader can't follow the argument from setup to conclusion |
 | Buried key finding | Structure & TL;DR | MAJOR | -10 | "So what" appears on page 8 instead of upfront |
-| Generic/non-actionable headings | Structure & TL;DR | MINOR | -3 | Heading says "Results" instead of "Churn dropped 15% after intervention" |
+| Generic/non-actionable headings | Structure & TL;DR | MINOR | -2 | Heading says "Results" instead of "Churn dropped 15% after intervention" |
 | Audience mismatch | Audience Fit | MAJOR | -10 | Technical jargon in exec-targeted deck, or insufficient rigor for peer DS |
 | Recycled presentation for wrong audience | Audience Fit | MAJOR | -8 | Same deck sent to exec and peer DS without adaptation |
 | Limitations/scope unclear for downstream | Audience Fit | MAJOR | -10 | ML Eng builds production model on exploratory finding because caveats were buried |
 | Too long / buries signal in noise | Conciseness & Prioritization | MAJOR | -10 | 30-page deck that should be 10; appendix material in main body |
 | Data without narrative context | Conciseness & Prioritization | MAJOR | -8 | Metrics table dumped without explanation of what matters |
 | Unclear or misleading visualization | Conciseness & Prioritization | MAJOR | -8 | Chart missing axis labels, wrong chart type, or chartjunk |
-| Unnecessary chart or table | Conciseness & Prioritization | MINOR | -3 | Chart showing long-tail data that adds no insight |
-| Sloppy formatting / inconsistent polish | Conciseness & Prioritization | MINOR | -5 | Mixed fonts, broken indentation, spelling errors |
+| Unnecessary chart or table | Conciseness & Prioritization | MINOR | -2 | Chart showing long-tail data that adds no insight |
+| Sloppy formatting / inconsistent polish | Conciseness & Prioritization | MINOR | -3 | Mixed fonts, broken indentation, spelling errors |
 | Vague recommendation or answer | Actionability | MAJOR | -8 | "We should look into this further" without specifics |
 | Recommendation scoped to wrong decision level | Actionability | MAJOR | -8 | VP-level funding decision framed as team-level action item |
 | No named owner or next step | Actionability | MINOR | -5 | Recommendation says what but not who or when |
@@ -72,8 +73,8 @@ updating all three agent prompts.
 
 **Severity Escalation Guard:** Subagents MUST use the exact severity and deduction values from
 this table. Do not escalate a MINOR to MAJOR or a MAJOR to CRITICAL based on context, workflow
-mode, or audience. If an issue type is listed as MINOR (-5) above, it stays MINOR (-5) in every
-review. The table is the source of truth — no exceptions.
+mode, or audience. If an issue type is listed as MINOR above, it stays MINOR at its listed
+deduction in every review. The table is the source of truth — no exceptions.
 
 ---
 
@@ -89,14 +90,15 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
 
 | Strength | Credit | Criteria |
 |---|---|---|
-| Real experimental design | +8 | Test vs. control groups, random assignment, or quasi-experimental method present |
-| Pre-specified hypotheses | +5 | Hypotheses stated before results, with named outcome metrics |
-| Pre-specified success threshold | +3 | Practical significance threshold or decision criteria defined upfront |
-| Covariate or balance check | +3 | Checked for confounders, selection bias, or group comparability |
-| Reports specific quantitative results | +3 | Actual numbers reported (not vague claims like "significant improvement") |
-| External validation or benchmarking | +3 | Results compared against external baseline, prior period, or industry benchmark |
-| Sensitivity or robustness check | +3 | Tested whether conclusions hold under alternative assumptions or methods |
-| Reproducibility detail provided | +2 | Enough methodological detail for another analyst to replicate the approach |
+| Appropriate methodology for the question | +5 | The chosen analytical approach fits the question being asked. Experiments for causal questions, predictive models for forecasting, classification for categorization, descriptive statistics for exploration. The method must be well-matched to the stated objective, not just present. |
+| Systematic model or method comparison | +5 | Compared multiple approaches, models, or methods and justified the final selection. At least 2 alternatives with comparable evaluation metrics. Examples: multi-model comparison with CV scores, A/B test vs. pre-post comparison, multiple feature engineering approaches evaluated. |
+| Pre-specified goals or hypotheses | +3 | Goals, hypotheses, or success criteria stated before results. Can be formal hypotheses (experiment), target metrics (ML), or research questions (exploratory). Must appear before the results section, not retrofitted. |
+| Validation methodology present | +5 | Claims supported by an appropriate validation approach. Experiments: statistical tests with significance levels and confidence intervals. ML: cross-validation, holdout evaluation, or train/test split with reported metrics. Systems: production metrics, before/after measurement, or impact evaluation. Observational: sensitivity analysis or robustness checks. The validation must match the claim type. |
+| Reports specific quantitative results with context | +3 | Specific quantitative results with at least one contextualizing element: comparison to baseline, confidence interval, significance test, or benchmark. A bare number without context (e.g., "accuracy was 70%" with no comparison point) does not qualify. |
+| External validation or benchmarking | +3 | Results compared against external baseline, prior period, industry benchmark, or known standard. Must be a genuine external comparison point. |
+| Demonstrated real-world impact | +8 | Analysis drove a concrete, measurable real-world outcome: a shipped product change with tracked metrics, a deployed model or system in production with measured performance, or a business decision with stated result. Must point to specific evidence of impact in the document, not just a recommendation or projected benefit. |
+| Honest negative or null result reported | +3 | Reports a result that did not work, an approach that failed, or an unexpected finding without spinning it as positive. Must be a substantive finding, not a throwaway mention. |
+| Reproducibility detail provided | +2 | Enough methodological detail for another analyst to replicate the approach: data sources, key parameters, methodology steps, and evaluation criteria. |
 
 ### Communication Dimension Credits
 
@@ -108,6 +110,7 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
 | Actionable recommendations with owners | +5 | Specific next steps, named owners or teams, timeline or priority indicated |
 | Clear limitations stated | +3 | Scope boundaries and caveats presented accessibly for downstream consumers |
 | Effective data visualization | +3 | Charts have clear titles stating the takeaway, labeled axes, right chart type |
+| Effective worked example or scenario | +3 | Concrete numerical example or relatable scenario that makes an abstract methodology, framework, or finding tangible for the reader. Must walk through specific values, not just describe the approach generically. |
 | Progressive disclosure structure | +3 | Summary accessible to all, detail available for those who need it |
 | Professional polish throughout | +2 | Consistent formatting, visual hierarchy, no errors — signals credibility |
 
@@ -119,6 +122,18 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
 4. **Credits do not cancel floor rules:** If a CRITICAL finding triggers a floor rule (Section 3),
    the credit still applies to the numeric score, but the verdict cap remains.
 5. **Report in STRENGTH LOG:** Subagents list each credited strength with its value in the output.
+6. **Conditional credit for unvalidated experimental claims:** When an analysis presents
+   experimental design (test vs. control groups, random assignment, or quasi-experimental
+   structure) but reports NO statistical validation for the experimental results (no p-values,
+   no confidence intervals, no named statistical tests for any hypothesis), apply:
+   - "Appropriate methodology for the question": halved (round down)
+   - "Pre-specified goals or hypotheses": halved (round down)
+   - "Validation methodology present": award +0 (validation is absent, not partial)
+   - "Reports specific quantitative results with context": halved (round down), because
+     the reported results are unvalidated experimental claims
+   This rule applies ONLY when experimental structure is present but unvalidated. It does NOT
+   apply to non-experimental analyses (ML, systems, operational, exploratory), which have their
+   own validation forms captured by "Validation methodology present."
 
 ---
 

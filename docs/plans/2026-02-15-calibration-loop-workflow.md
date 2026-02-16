@@ -18,7 +18,7 @@
 │                                                              │
 │  ┌─────────┐   ┌──────────┐   ┌──────────────┐              │
 │  │ 1. FIX  │──→│ 2. TEST  │──→│ 3. TEST NOTES│              │
-│  │ (plugin │   │ (run 3   │   │ (per fixture │              │
+│  │ (plugin │   │ (run 6   │   │ (per fixture │              │
 │  │  files) │   │ fixtures)│   │  results)    │              │
 │  └─────────┘   └──────────┘   └──────┬───────┘              │
 │                                      │                       │
@@ -74,12 +74,15 @@ Where `rN` = round number (r0 = current baseline, r1 = first fix round, etc.)
 | 1 | Vanguard test review | `dev/test-results/{date}-rN-vanguard-review.md` | ds-review-lead pipeline |
 | 2 | Meta test review | `dev/test-results/{date}-rN-meta-review.md` | ds-review-lead pipeline |
 | 3 | Rossmann test review | `dev/test-results/{date}-rN-rossmann-review.md` | ds-review-lead pipeline |
-| 4 | Calibration notes | `dev/test-results/{date}-rN-calibration-notes.md` | Claude (synthesis step) |
-| 5 | Round comparison | `dev/test-results/{date}-rN-vs-rN-1-comparison.md` | Claude (diff step) |
-| 6 | AI Engineer review | `dev/test-results/{date}-rN-principal-ai-engineer-assessment.md` | Claude (role-play) |
-| 7 | PM Lead review | `dev/reviews/{date}-rN-pm-lead-calibration-review.md` | Claude (role-play) |
-| 8 | DS Lead review | `dev/test-results/{date}-rN-ds-lead-assessment.md` | Claude (role-play) |
-| 9 | Fix plan (A3) | `dev/test-results/{date}-rN-calibration-fix-plan.md` | Claude (A3 synthesis) |
+| 4 | Airbnb Message Intent review | `dev/test-results/{date}-rN-airbnb-message-intent-review.md` | ds-review-lead pipeline |
+| 5 | Airbnb FIV review | `dev/test-results/{date}-rN-airbnb-fiv-review.md` | ds-review-lead pipeline |
+| 6 | Netflix Proxy Metrics review | `dev/test-results/{date}-rN-netflix-proxy-metrics-review.md` | ds-review-lead pipeline |
+| 7 | Calibration notes | `dev/test-results/{date}-rN-calibration-notes.md` | Claude (synthesis step) |
+| 8 | Round comparison | `dev/test-results/{date}-rN-vs-rN-1-comparison.md` | Claude (diff step) |
+| 9 | AI Engineer review | `dev/test-results/{date}-rN-principal-ai-engineer-assessment.md` | Claude (role-play) |
+| 10 | PM Lead review | `dev/reviews/{date}-rN-pm-lead-calibration-review.md` | Claude (role-play) |
+| 11 | DS Lead review | `dev/test-results/{date}-rN-ds-lead-assessment.md` | Claude (role-play) |
+| 12 | Fix plan (A3) | `dev/test-results/{date}-rN-calibration-fix-plan.md` | Claude (A3 synthesis) |
 
 ### Round 0 Baseline (Already Exists)
 
@@ -104,14 +107,26 @@ The loop exits when ALL of these pass:
 
 ### Scoring Criteria
 
+**Core Fixtures (calibration targets):**
+
 | Criterion | Test | Pass Condition |
 |---|---|---|
 | Vanguard score | Run review on `dev/test-fixtures/real/vanguard-ab-test.md` (tech/reactive) | Score 40-55, Verdict: Minor Fix |
 | Meta score | Run review on `dev/test-fixtures/real/meta-llm-bug-reports.md` (exec/proactive) | Score in owner-chosen target range |
 | Rossmann score | Run review on `dev/test-fixtures/real/rossmann-sales-prediction.md` (mixed/proactive) | Score 45-60, Verdict: Minor Fix |
 | Tier separation | Compare Vanguard vs Meta analysis dimension scores | Vanguard analysis > Meta analysis by 5+ points |
-| Overall differentiation | Compare highest and lowest scores across all 3 | 15+ point gap between strongest and weakest |
+| Overall differentiation | Compare highest and lowest scores across all 3 core | 15+ point gap between strongest and weakest |
 | CRITICAL count | Count CRITICALs per test | Max 2 per test; only genuinely misleading findings |
+
+**Extended Fixtures (generalization check):**
+
+| Criterion | Test | Pass Condition |
+|---|---|---|
+| Airbnb Message Intent | Run review on `dev/test-fixtures/airbnb-message-intent-classification.md` (mixed/general) | Analysis 55-65, Communication 70-80 |
+| Airbnb FIV | Run review on `dev/test-fixtures/airbnb-future-value-tradeoffs.md` (mixed/general) | Analysis 65-75, Communication 70-80 |
+| Netflix Proxy Metrics | Run review on `dev/test-fixtures/netflix-proxy-metrics.md` (mixed/general) | Analysis 60-70, Communication 65-75 |
+| Blog post differentiation | Compare extended fixture scores | Correctly ranks FIV ≥ Message Intent ≥ Proxy Metrics |
+| Genre consistency | Compare blog posts vs core fixtures | Blog posts not systematically over-penalized for missing business metrics |
 
 ### Quality Criteria
 
@@ -171,17 +186,19 @@ git commit -m "feat(calibration): implement round N fixes — [brief description
 
 ---
 
-### Task 2: Run the Three Test Fixtures
+### Task 2: Run the Six Test Fixtures
 
-**Files:**
+**Core Fixtures:**
 - Input: `dev/test-fixtures/real/vanguard-ab-test.md`
 - Input: `dev/test-fixtures/real/meta-llm-bug-reports.md`
 - Input: `dev/test-fixtures/real/rossmann-sales-prediction.md`
-- Output: `dev/test-results/{date}-rN-vanguard-review.md`
-- Output: `dev/test-results/{date}-rN-meta-review.md`
-- Output: `dev/test-results/{date}-rN-rossmann-review.md`
 
-**Step 1: Run Vanguard review**
+**Extended Fixtures (Blog Posts):**
+- Input: `dev/test-fixtures/airbnb-message-intent-classification.md`
+- Input: `dev/test-fixtures/airbnb-future-value-tradeoffs.md`
+- Input: `dev/test-fixtures/netflix-proxy-metrics.md`
+
+**Step 1: Run Vanguard review (core)**
 
 Invoke the ds-review-lead pipeline on the Vanguard fixture:
 ```
@@ -189,32 +206,58 @@ Invoke the ds-review-lead pipeline on the Vanguard fixture:
 ```
 Save the complete output to `dev/test-results/{date}-rN-vanguard-review.md`.
 
-**Step 2: Run Meta review**
+**Step 2: Run Meta review (core)**
 
 ```
 /ds-review:review dev/test-fixtures/real/meta-llm-bug-reports.md --mode full --audience exec --workflow proactive
 ```
 Save to `dev/test-results/{date}-rN-meta-review.md`.
 
-**Step 3: Run Rossmann review**
+**Step 3: Run Rossmann review (core)**
 
 ```
 /ds-review:review dev/test-fixtures/real/rossmann-sales-prediction.md --mode full --audience mixed --workflow proactive
 ```
 Save to `dev/test-results/{date}-rN-rossmann-review.md`.
 
-**Step 4: Quick sanity check**
+**Step 4: Run Airbnb Message Intent review (extended)**
 
-After all 3 tests, extract scores into a comparison table:
+```
+/ds-review:review dev/test-fixtures/airbnb-message-intent-classification.md --mode full --audience mixed --workflow general
+```
+Save to `dev/test-results/{date}-rN-airbnb-message-intent-review.md`.
 
-| Test | R{N-1} Score | R{N} Score | Delta | R{N} CRITICALs | R{N} Findings |
-|---|---|---|---|---|---|
-| Vanguard | ? | ? | ? | ? | ? |
-| Meta | ? | ? | ? | ? | ? |
-| Rossmann | ? | ? | ? | ? | ? |
+**Step 5: Run Airbnb FIV review (extended)**
 
-If any score went DOWN from the prior round on a fixture where it should have
-gone up, flag this immediately before proceeding.
+```
+/ds-review:review dev/test-fixtures/airbnb-future-value-tradeoffs.md --mode full --audience mixed --workflow general
+```
+Save to `dev/test-results/{date}-rN-airbnb-fiv-review.md`.
+
+**Step 6: Run Netflix Proxy Metrics review (extended)**
+
+```
+/ds-review:review dev/test-fixtures/netflix-proxy-metrics.md --mode full --audience mixed --workflow general
+```
+Save to `dev/test-results/{date}-rN-netflix-proxy-metrics-review.md`.
+
+**Step 7: Quick sanity check**
+
+After all 6 tests, extract scores into a comparison table:
+
+| Test | Type | R{N-1} Score | R{N} Score | Delta | R{N} CRITICALs | R{N} Findings |
+|---|---|---|---|---|---|---|
+| Vanguard | Core | ? | ? | ? | ? | ? |
+| Meta | Core | ? | ? | ? | ? | ? |
+| Rossmann | Core | ? | ? | ? | ? | ? |
+| Airbnb Message Intent | Extended | ? | ? | ? | ? | ? |
+| Airbnb FIV | Extended | ? | ? | ? | ? | ? |
+| Netflix Proxy Metrics | Extended | ? | ? | ? | ? | ? |
+
+Check:
+- Core fixtures: If any score went DOWN from the prior round where it should have gone up, flag immediately
+- Extended fixtures: Verify scores within expected ranges (see Acceptance Criteria)
+- Differentiation: Blog posts should differentiate quality (FIV > Message Intent > Proxy Metrics expected)
 
 ---
 
@@ -373,7 +416,7 @@ Use this template:
 - Create: `dev/test-results/{date}-rN-principal-ai-engineer-assessment.md`
 - Create: `dev/reviews/{date}-rN-pm-lead-calibration-review.md`
 - Create: `dev/test-results/{date}-rN-ds-lead-assessment.md`
-- Read: Round N calibration notes, comparison doc, all 3 review outputs
+- Read: Round N calibration notes, comparison doc, all 6 review outputs (3 core + 3 extended)
 
 **IMPORTANT:** These three reviews run as **parallel subagents** via the Task tool.
 Each subagent receives the same input context but reviews through a different lens.
@@ -400,9 +443,15 @@ calibration progress. Read all the files below and produce your assessment.
 
 ## Test Results (read for scoring context)
 
+**Core fixtures:**
 8. Vanguard review: dev/test-results/{date}-rN-vanguard-review.md
 9. Meta review: dev/test-results/{date}-rN-meta-review.md
 10. Rossmann review: dev/test-results/{date}-rN-rossmann-review.md
+
+**Extended fixtures (blog posts):**
+11. Airbnb Message Intent review: dev/test-results/{date}-rN-airbnb-message-intent-review.md
+12. Airbnb FIV review: dev/test-results/{date}-rN-airbnb-fiv-review.md
+13. Netflix Proxy Metrics review: dev/test-results/{date}-rN-netflix-proxy-metrics-review.md
 
 ## Your Task
 
@@ -577,11 +626,14 @@ Copy this checklist at the start of each round:
   - [ ] Apply changes to plugin files
   - [ ] Self-verify changes
   - [ ] Commit
-- [ ] Task 2: Run 3 test fixtures
+- [ ] Task 2: Run 6 test fixtures
   - [ ] Vanguard (tech/reactive) → save review
   - [ ] Meta (exec/proactive) → save review
   - [ ] Rossmann (mixed/proactive) → save review
-  - [ ] Quick sanity check (score comparison table)
+  - [ ] Airbnb Message Intent (mixed/general) → save review
+  - [ ] Airbnb FIV (mixed/general) → save review
+  - [ ] Netflix Proxy Metrics (mixed/general) → save review
+  - [ ] Quick sanity check (score comparison table for all 6)
 - [ ] Task 3: Append pipeline observations to each review
 - [ ] Task 4: Write calibration notes (synthesize + root cause)
 - [ ] Task 5: Write round comparison (R{N} vs R{N-1} with trajectory)
