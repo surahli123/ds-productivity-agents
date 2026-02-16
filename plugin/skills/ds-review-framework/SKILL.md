@@ -73,8 +73,8 @@ updating all three agent prompts.
 
 **Severity Escalation Guard:** Subagents MUST use the exact severity and deduction values from
 this table. Do not escalate a MINOR to MAJOR or a MAJOR to CRITICAL based on context, workflow
-mode, or audience. If an issue type is listed as MINOR (-5) above, it stays MINOR (-5) in every
-review. The table is the source of truth — no exceptions.
+mode, or audience. If an issue type is listed as MINOR above, it stays MINOR at its listed
+deduction in every review. The table is the source of truth — no exceptions.
 
 ---
 
