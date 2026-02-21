@@ -196,9 +196,9 @@ Agent Layer:
 
 ---
 
-## [Unreleased]
+## [0.4.1] — 2026-02-15
 
-### v0.4.1 — Credit Redesign + R3 Calibration + Emoji Dashboard (2026-02-15)
+### Credit Redesign + R3 Calibration + Emoji Dashboard
 
 **Status:** Merged to main via PR #1. R4 calibration pending.
 

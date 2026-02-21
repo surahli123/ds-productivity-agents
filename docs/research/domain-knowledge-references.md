@@ -2,7 +2,7 @@
 
 **Purpose:** Research backing for the domain knowledge digest files. Each entry includes
 source, key finding, citation, and which digest section/tier it maps to. This document
-feeds into the actual digest files (`plugin/digests/*.md`) during Layer 1 implementation.
+feeds into the actual digest files (`shared/skills/search-domain-knowledge/digests/*.md`) during Layer 1 implementation.
 
 **Organization:** Batches correspond to domains. Batch 1 covers Search Ranking (the
 largest and template domain). Batch 2 covers Query Understanding. Batch 3 covers
