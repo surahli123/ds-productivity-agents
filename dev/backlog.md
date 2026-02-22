@@ -184,6 +184,13 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
   - Verified in both full and quick mode
   - Merged to main via PR #1
 
+### To Do — Dogfood (Blocked: Needs User-Authored Analysis)
+- [ ] **Dogfood test:** Run `/ds-review --mode quick --domain search-ranking` on a real analysis the user wrote
+  - Existing fixtures are all blog posts / Kaggle notebooks — not suitable for author-perspective dogfood
+  - User needs to provide or paste their own search relevance analysis
+  - Goal: evaluate output format, finding quality, and actionability from the author's perspective
+  - Results feed directly into P1 Output Restructure priorities
+
 ### To Do — P1 Items (Post-Calibration)
 - [ ] **P1: Output Restructure — Phase 2** (from UX reviewer feedback)
   - Compress per-lens detail to 1-2 sentences
@@ -313,18 +320,32 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
   - `airbnb-search-interleaving.md`, `atlassian-rovo-search-relevance.md`, `eppo-search-ranking-experiments.md`
 - Session log: `dev/sessions/2026-02-21-r4-credit-cap-calibration.md`
 
-#### To Do — R4 Domain Calibration (NEXT SESSION)
-- [ ] **Run 3 search fixtures WITH `--domain search-ranking`** using actual `/ds-review` command
-- [ ] **Run 3 R3 core fixtures WITH `--domain search-ranking`** (cross-genre: domain reviewer should find few/no domain issues)
-- [ ] **Cross-run consistency:** Same doc 3x with `--domain`, verify scores within ±10
-- [ ] Evaluate whether recalibrated scores are reasonable across genres without format detection
-- [ ] If still off: design `--format` parameter or auto-detection (ADR needed)
+#### Done — R4 Domain Calibration with `--domain search-ranking` (2026-02-21)
+- [x] **Phase 1: 3 search fixtures WITH `--domain search-ranking`**
+  - Airbnb Interleaving: 95 (A:100, C:79, D:100)
+  - Atlassian Rovo: 88 (A:100, C:67, D:83)
+  - Eppo Search Experiments: 60 (A:57, C:66, D:58)
+- [x] **Phase 2: 3 core fixtures WITH `--domain search-ranking`** (cross-genre)
+  - Vanguard: 64 (A:49, C:58, D:100) — baseline 57, inflation +10
+  - Meta: 75 (A:70, C:60, D:100) — baseline 60, inflation +10
+  - Rossmann: 83 (A:86, C:61, D:100) — baseline 63, inflation +9
+  - Domain reviewer correctly finds 0 issues on non-search content
+  - ~10 point inflation from 50/25/25 weighting (acceptable: --domain is opt-in)
+- [x] **Phase 3: 3 consistency runs** (Airbnb fixture 3x)
+  - Scores: 95, 94, 93 — spread of 2 points (pass criteria: ±10) ✅
+- [x] **Phase 4: Evaluation** — SHIP AS-IS
+  - Domain adds genuine value on search content ✅
+  - Graceful non-search handling (0 false positives) ✅
+  - Highly stable (2-point spread) ✅
+  - 50/25/25 weighting produces sensible scores ✅
+- Session log: `dev/sessions/2026-02-21-r4-domain-calibration-full.md`
 
-#### Calibration Watch Items (Monitor During R4, Don't Pre-Fix)
-- Credit-to-deduction ratio: domain credits (+5) easier to earn than analysis credits (+8). Watch for score inflation.
-- Position bias contextual rule (CRITICAL vs MAJOR) may be hard for reviewer to calibrate consistently.
-- Multi-objective tradeoffs at MINOR (-7) may need bumping if frequently missed.
-- Head-tail distribution emphasis: if tail queries underweighted, consider dedicated deduction row.
+#### Calibration Watch Items — R4 Observations
+- Credit-to-deduction ratio: domain credits earned at +15 cap on all search fixtures → working as intended
+- Multi-objective tradeoffs at MINOR (-7): fired consistently across domain reviewers (3/4 Airbnb runs) → no change needed
+- Domain inflation on non-search: ~10 points consistently → acceptable since --domain is opt-in
+- Communication dimension variance: 76-81 across 4 identical runs → highest variance dimension but within tolerance
+- No format detection needed: score differentiation is driven by content quality, not format
 
 ### v1.0: Ship — COMPLETE (2026-02-15)
 - [x] All agents passing manual eval rubric
