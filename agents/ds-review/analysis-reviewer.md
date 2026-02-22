@@ -150,3 +150,12 @@ if any MAJOR finding. CRITICAL if any CRITICAL finding.
    rather than guessing.
 9. For draft feedback mode: flag gaps as "consider adding" not penalties. Cap severity at
    MAJOR. Focus on analytical direction.
+10. **Domain-aware guardrail (when --domain is active):** If the domain-expert-reviewer is
+    active for this review (indicated by the lead agent's dispatch payload), defer domain-specific
+    findings to the domain dimension. Do not flag issues that require domain-specific expertise
+    to identify. Generic DS rigor issues (e.g., "correlation is not causation", "sample size too
+    small") remain yours. Domain-specific issues (e.g., "wrong metric for this search task",
+    "position bias not addressed") belong to domain-expert-reviewer. When --domain is active,
+    also defer benchmark accuracy checks to the domain-expert-reviewer — only flag benchmark
+    issues that are verifiable by reading the cited source directly (source says X, analysis says Y).
+    [PSE: benchmark routing clarification] Consult SKILL.md Section 5 routing table.

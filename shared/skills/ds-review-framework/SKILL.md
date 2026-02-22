@@ -2,22 +2,20 @@
 name: ds-review-framework
 description: >
   Shared rubrics, scoring tables, audience personas, and routing rules for the DS analysis
-  review agent system. Auto-loaded by ds-review-lead, analysis-reviewer, and communication-reviewer
-  agents. Contains: (1) severity definitions with verdict impact, (2) deduction tables for 8 review
-  lenses across analysis and communication dimensions, (2b) strength credit tables for crediting
-  good practices, (3) floor rules that cap verdicts on CRITICAL findings, (4) audience persona
-  definitions (exec, tech, DS, mixed) with thinking styles, (5) dimension boundary routing table
-  for gray-zone finding ownership, (6) workflow context definitions (proactive, reactive, general),
-  (7) common anti-patterns with catching lenses, (8) Confluence structural element guide for
-  TL;DR detection.
+  review agent system. Auto-loaded by ds-review-lead, analysis-reviewer, communication-reviewer,
+  and domain-expert-reviewer agents. Contains: (1) severity definitions with verdict impact
+  including ADVISORY, (2) deduction tables for 11 review lenses across analysis, communication,
+  and domain knowledge dimensions, (2b) strength credit tables, (3) floor rules, (4) audience
+  persona definitions, (5) dimension boundary routing table with cross-dimension dedup rules,
+  (6) workflow context definitions, (7) common anti-patterns, (8) Confluence structural element guide.
 auto_activate: true
 ---
 
 # DS Review Framework
 
-Shared knowledge for ds-review-lead, analysis-reviewer, and communication-reviewer agents.
+Shared knowledge for ds-review-lead, analysis-reviewer, communication-reviewer, and domain-expert-reviewer agents.
 This file is auto-loaded. Agents reference specific sections — do not restructure without
-updating all three agent prompts.
+updating all four agent prompts.
 
 ---
 
@@ -28,6 +26,7 @@ updating all three agent prompts.
 | CRITICAL | A fundamental flaw that would cause the analysis to fail its purpose — wrong conclusions reached, key audience misled, or decisions made on faulty foundation. The analysis is NOT ready to share. | Floor rule: caps verdict at Minor Fix (max 79). 2+ CRITICAL caps at Major Rework (max 59). |
 | MAJOR | A significant gap that weakens the analysis but doesn't invalidate it. The reader can still reach roughly correct conclusions, but the analysis loses impact, credibility, or actionability. | Standard deduction applies (-8 to -12). Multiple MAJORs compound. |
 | MINOR | A polish issue that doesn't affect the core message or analytical validity. Nice to fix, not blocking. | Small deduction (-3 to -5). |
+| ADVISORY | A suggestion sourced from recent team learnings or post-mortem data (advisory authority). Worth considering but context-dependent — the analysis may validly disagree. | Capped at -2 deduction. Never triggers floor rules. |
 
 ---
 
@@ -70,6 +69,36 @@ updating all three agent prompts.
 | Missing "so what" for key finding | Actionability | MAJOR | -8 | Finding presented as trivia without business implication |
 | Measurement not interpretable by requester | Actionability | MAJOR | -8 | A/B test result without confidence interval or practical significance |
 | Over-interpretation boundary unclear | Actionability | MAJOR | -8 | Result presented without stating what the data can and cannot support |
+
+### Domain Knowledge Dimension
+
+| Issue Type | Lens | Severity | Deduction | Example |
+|---|---|---|---|---|
+| Fundamentally wrong technique for this domain | Technique Appropriateness | CRITICAL | -20 | Using pointwise classification for a ranking task where pairwise or listwise LTR is standard — the pointwise loss does not optimize for ranking quality [PSE: subtler example] |
+| Domain-standard technique ignored without justification | Technique Appropriateness | MAJOR | -10 | Using t-test for conversion rates when chi-squared or bootstrap is domain standard |
+| Offline metric used to justify production/launch decision without online validation plan | Technique Appropriateness | MAJOR | -10 | Recommends ranking model change based solely on offline NDCG lift without online experiment plan [PSE: scoped to production decisions] |
+| Domain-specific data characteristic unaddressed | Technique Appropriateness | MAJOR | -8 | Click model without position bias correction in search relevance |
+| Multi-objective ranking tradeoffs ignored | Technique Appropriateness | MINOR | -7 | Analysis optimizes a single ranking objective without acknowledging known tradeoffs with other dimensions (relevance vs. diversity, relevance vs. freshness, engagement vs. satisfaction) [PSE: added] |
+| Non-standard technique used without domain justification | Technique Appropriateness | MINOR | -7 | Novel approach without explaining why standard approach was insufficient |
+| Recent learning suggests a better approach | Technique Appropriateness | ADVISORY | -2 | Recent team experiment found that approach X outperforms approach Y for this use case |
+| Cited benchmark is fabricated or grossly wrong | Benchmark & External Validity | CRITICAL | -20 | "Industry standard NDCG is 0.90" when actual domain range is 0.40-0.55 |
+| Key claim is factually wrong and influences conclusions | Benchmark & External Validity | CRITICAL | -20 | "Google's 2024 study showed X" but study actually showed the opposite |
+| External source mischaracterized | Benchmark & External Validity | MAJOR | -10 | Paper cited as supporting the approach, but paper found mixed results |
+| Outdated benchmark used as current reference | Benchmark & External Validity | MAJOR | -10 | Using pre-2020 CTR benchmarks for a 2026 search system |
+| Cited number is inaccurate but doesn't change conclusions | Benchmark & External Validity | MAJOR | -8 | "Industry average is 12%" when it's actually 8% |
+| Benchmark from wrong sub-domain applied | Benchmark & External Validity | MAJOR | -8 | E-commerce search benchmarks applied to document retrieval |
+| Internal baseline not sanity-checked against domain norms | Benchmark & External Validity | MINOR | -5 | Reporting a metric without noting whether it's in the expected range |
+| Claim unverifiable — no source, web search finds nothing | Benchmark & External Validity | MINOR | -3 | "Research shows that..." with no citation and no verifiable basis |
+| Recent learning suggests benchmark is outdated | Benchmark & External Validity | ADVISORY | -2 | Recent team experiment found different baseline than the one cited |
+| Known critical pitfall completely ignored | Domain Pitfall Awareness | CRITICAL | -15 | Search relevance eval with no mention of position bias when using click data. Note: CRITICAL when click data informs model decisions or evaluation conclusions. MAJOR (-10) when used for exploratory analysis with acknowledged limitations. [PSE: contextual note] |
+| Domain anti-pattern present | Domain Pitfall Awareness | MAJOR | -10 | Optimizing CTR alone in search when it's known to favor clickbait over relevance |
+| Selection bias in training data unacknowledged | Domain Pitfall Awareness | MAJOR | -10 | Click-through model trained on logged data without acknowledging logging policy bias. Creates feedback loop: model learns to prefer items it already ranked highly. [PSE: bumped from -8] |
+| Metric gaming / Goodhart's Law risk unaddressed | Domain Pitfall Awareness | MAJOR | -8 | Optimizes single engagement metric without discussing proxy risk |
+| Known edge case unaddressed | Domain Pitfall Awareness | MAJOR | -8 | Ranking model evaluated only on head queries, no mention of tail query performance. Note: top 1% of queries (head) = 30-50% of traffic; tail queries (30-40% unique) often worst-performing segment. [PSE: emphasis] |
+| Evaluation without exploration/exploitation separation | Domain Pitfall Awareness | MAJOR | -8 | Evaluation metrics computed on mixed traffic without separating exploration from exploitation — exploration traffic produces systematically different metric distributions [PSE: added] |
+| Pitfall acknowledged but mitigation missing | Domain Pitfall Awareness | MINOR | -5 | "We know position bias exists" but no correction or justification for skipping it |
+| Annotation position bias in relevance labels | Domain Pitfall Awareness | MINOR | -5 | Relevance labels collected without randomized presentation order may contain systematic annotation bias, propagating into "gold standard" labels used for offline evaluation [PSE: added] |
+| Recent learning highlights a pitfall not addressed | Domain Pitfall Awareness | ADVISORY | -2 | Recent post-mortem found a failure mode relevant to this analysis |
 
 **Severity Escalation Guard:** Subagents MUST use the exact severity and deduction values from
 this table. Do not escalate a MINOR to MAJOR or a MAJOR to CRITICAL based on context, workflow
@@ -114,11 +143,27 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
 | Progressive disclosure structure | +3 | Summary accessible to all, detail available for those who need it |
 | Professional polish throughout | +2 | Consistent formatting, visual hierarchy, no errors — signals credibility |
 
+### Domain Knowledge Dimension Credits
+
+| Strength | Credit | Criteria |
+|---|---|---|
+| Domain-standard technique applied correctly | +5 | Technique matches what experts in this domain would choose |
+| Alternative techniques considered with domain rationale | +3 | Justified why chosen technique over domain alternatives |
+| Domain-specific data preprocessing applied | +3 | Addressed known data issues for this domain (e.g., position debiasing) |
+| Benchmarks cited with verifiable sources | +5 | External benchmarks include source, date, and context |
+| All key claims cited and verifiable | +3 | Major factual claims include sources that check out |
+| Multiple reference points provided | +3 | Compared against >1 baseline (prior period + industry + competitor) |
+| Accurate characterization of external work | +2 | Referenced studies described fairly, not cherry-picked |
+| Benchmark recency acknowledged | +2 | Noted when benchmarks are from and whether domain has shifted since |
+| Proactively addresses domain pitfalls | +5 | Identifies and mitigates known pitfalls without being prompted |
+| Domain edge cases explicitly considered | +3 | Analysis addresses known edge cases (segments, tail behavior, cold-start) |
+| Anti-pattern awareness demonstrated | +2 | Explains why a common shortcut was avoided or why it's acceptable here |
+
 ### Credit Rules
 
 1. **Evidence required:** Only credit strengths you can point to in the document. No inferred credit.
 2. **Partial credit allowed:** If a strength is partially present, award half the credit value (round down).
-3. **Cap is per-dimension:** Analysis credits cap at +25. Communication credits cap at +25 independently.
+3. **Cap is per-dimension:** Analysis credits cap at +25. Communication credits cap at +25. Domain Knowledge credits cap at +25. Each is independent.
 4. **Credits do not cancel floor rules:** If a CRITICAL finding triggers a floor rule (Section 3),
    the credit still applies to the numeric score, but the verdict cap remains.
 5. **Report in STRENGTH LOG:** Subagents list each credited strength with its value in the output.
@@ -134,15 +179,18 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
    This rule applies ONLY when experimental structure is present but unvalidated. It does NOT
    apply to non-experimental analyses (ML, systems, operational, exploratory), which have their
    own validation forms captured by "Validation methodology present."
+7. **ADVISORY coexistence:** ADVISORY findings sourced from advisory content do not affect credit eligibility. A credit and an ADVISORY finding for the same aspect can coexist.
 
 ---
 
 ## 3. Floor Rules
 
-1. **Any CRITICAL finding** in either dimension → verdict capped at **Minor Fix (max 79)**, regardless of computed score.
-2. **Two or more CRITICAL findings** across either dimension → verdict capped at **Major Rework (max 59)**.
+1. **Any CRITICAL finding** in any dimension → verdict capped at **Minor Fix (max 79)**, regardless of computed score.
+2. **Two or more CRITICAL findings** across any dimension → verdict capped at **Major Rework (max 59)**.
 3. Floor rules override the **verdict band only**, not the numeric score. User sees both: `Score: 85 → Verdict: Minor Fix (floor rule applied)`.
 4. Rationale: An analysis with a flawed methodology or missing TL;DR should never be "Good to Go" regardless of arithmetic.
+5. **ADVISORY findings never trigger floor rules.** ADVISORY severity (-2) is informational only. It does not count toward CRITICAL thresholds. Even 10 ADVISORY findings do not affect the verdict.
+6. **Floor rules apply equally across all dimensions regardless of scoring weight.** A CRITICAL in the domain dimension (25% weight) caps the verdict identically to a CRITICAL in the analysis dimension (50% weight).
 
 **Verdict Bands:**
 
@@ -203,8 +251,23 @@ Defines which subagent owns gray-zone feedback. Prevents duplicate or conflictin
 | Number without decision context | communication-reviewer | Actionability | The analysis produced the number; comms failed to contextualize it |
 | Statistical vs practical significance confusion | analysis-reviewer | Metrics | If the analysis itself conflates them |
 | Statistical vs practical significance not communicated | communication-reviewer | Actionability | If the analysis distinguishes them but the presentation doesn't |
+| Domain-specific technique choice | domain-expert-reviewer | Technique Appropriateness | Requires specialist knowledge to evaluate |
+| Generic statistical method choice | analysis-reviewer | Methodology & Assumptions | Any statistician could evaluate |
+| Benchmark accuracy (requires domain knowledge to identify — knowing plausible range) | domain-expert-reviewer | Benchmark & External Validity | Domain-specific range knowledge needed [PSE: routing clarification] |
+| Benchmark accuracy (verifiable by reading cited source directly) | analysis-reviewer | Completeness & Source Fidelity | General fact-checking, source says X analysis says Y [PSE: routing clarification] |
+| Benchmark accuracy (both could catch, --domain active) | domain-expert-reviewer | Benchmark & External Validity | Domain version takes priority for scoring coherence [PSE: tiebreaker] |
+| Domain pitfall (known in the field) | domain-expert-reviewer | Domain Pitfall Awareness | Requires field-specific expertise |
+| Unstated assumption (general stats) | analysis-reviewer | Methodology & Assumptions | Generic DS rigor |
 
 **Rule:** When in doubt, assign to the subagent whose lens checklist most directly addresses the issue. If a finding genuinely spans both dimensions, the analysis-reviewer owns the root cause and the communication-reviewer owns the presentation impact — but only if both are independently actionable. Never report the same issue from both subagents.
+
+**Cross-dimension deduplication (analysis vs. domain):** When both analysis-reviewer and
+domain-expert-reviewer flag the same underlying issue, the lead agent deduplicates in Step 9.
+Two-stage approach: (1) Heuristic — same metric/method name, same document section, and/or
+same suggested alternative → deduplicate, keep domain version (more specific). (2) If heuristic
+is inconclusive, lead agent compares findings and keeps the domain version if they address
+the same root cause. The domain version is preferred because it provides more specific,
+actionable feedback.
 
 ---
 

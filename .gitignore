@@ -4,3 +4,6 @@ dev/test-fixtures/real/*.md
 
 # Internal working docs (kept locally, not on GitHub)
 dev/internal/
+
+# Git worktrees
+.worktrees/
