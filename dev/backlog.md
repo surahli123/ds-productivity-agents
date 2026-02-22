@@ -303,10 +303,19 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
   - Domain reviewer added genuine value vs 2-dimension review
 - [x] **Pushed to remote** — all changes on main
 
-#### To Do — R4 Extended Calibration (NEXT UP)
-- [ ] **Primary tuning fix:** Reduce credit cap from +25 → +15 per dimension (addresses R3 inflation)
-- [ ] **Secondary tuning (if needed):** Increase 2-3 MAJOR deductions by +2 each
-- [ ] **Re-run all 6 R3 fixtures** with `--domain search-ranking` for cross-genre comparison
+#### Done — R4 Extended Calibration (2026-02-21)
+- [x] **Primary tuning fix:** Reduce credit cap from +25 → +15 per dimension — ACCEPTED
+  - Vanguard: 72 → 57 (target 55-65) ✅
+  - Meta: 63 → 60 (target 60-70) ✅
+  - Rossmann: 86 → 63 (target 65-75, 2 pts below) ≈✅
+- [x] **Secondary tuning not needed** — primary fix sufficient
+- [x] **3 search-domain test fixtures created** for `--domain` calibration
+  - `airbnb-search-interleaving.md`, `atlassian-rovo-search-relevance.md`, `eppo-search-ranking-experiments.md`
+- Session log: `dev/sessions/2026-02-21-r4-credit-cap-calibration.md`
+
+#### To Do — R4 Domain Calibration (NEXT SESSION)
+- [ ] **Run 3 search fixtures WITH `--domain search-ranking`** using actual `/ds-review` command
+- [ ] **Run 3 R3 core fixtures WITH `--domain search-ranking`** (cross-genre: domain reviewer should find few/no domain issues)
 - [ ] **Cross-run consistency:** Same doc 3x with `--domain`, verify scores within ±10
 - [ ] Evaluate whether recalibrated scores are reasonable across genres without format detection
 - [ ] If still off: design `--format` parameter or auto-detection (ADR needed)

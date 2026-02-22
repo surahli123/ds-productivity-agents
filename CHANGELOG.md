@@ -6,7 +6,20 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ### v0.5 — Domain Expert Agent: Design & Layer 1 Implementation (2026-02-16 to 2026-02-21)
 
-**Status:** Layer 1 + Layer 2 complete. PR #4 merged. R4 domain calibration passed (5/5 planted issues detected).
+**Status:** Layer 1 + Layer 2 complete. PR #4 merged. R4 calibration passed (credit cap fix validated).
+
+#### R4 Extended Calibration (2026-02-21)
+
+- **Credit cap fix** — `shared/skills/ds-review-framework/SKILL.md` Section 2b
+  - Reduced per-dimension credit cap from +25 to +15
+  - Root cause: R3 score inflation (17-30 points above targets) from uncapped credit accumulation
+  - R4 results: Vanguard 72→57, Meta 63→60, Rossmann 86→63 (all within or ±2 of targets)
+  - Secondary fix (MAJOR deduction increases) not needed — primary fix sufficient
+- **3 search-domain test fixtures added** — `dev/test-fixtures/real/`
+  - `airbnb-search-interleaving.md` — Airbnb interleaving experiments
+  - `atlassian-rovo-search-relevance.md` — Atlassian Rovo multi-layer ranking
+  - `eppo-search-ranking-experiments.md` — Eppo search ranking experimentation guide
+  - Ready for `--domain search-ranking` calibration in next session
 
 **Goal:** Add a 3rd review dimension (Domain Knowledge) to the DS Review agent. Standalone Domain Knowledge Skill (Layer 1) that any agent can consume, plus a thin Domain Expert Reviewer subagent (Layer 2) and lead agent integration (Layer 3).
 
