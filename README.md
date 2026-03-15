@@ -1,8 +1,8 @@
 # DS Productivity Agents
 
-A suite of Claude Code agents for data science workflows in Search Relevance. Built on shared domain knowledge for Query Understanding, Search Ranking, and Search Infrastructure.
+A Claude Code plugin skill set for data science workflows in Search Relevance. Built on shared domain knowledge for Query Understanding, Search Ranking, and Search Infrastructure.
 
-## Agents
+## Skills
 
 ### 📊 DS Analysis Review (`/ds-review`)
 
@@ -11,13 +11,18 @@ Reviews completed DS analyses across three dimensions:
 - **Communication:** Narrative, audience fit, visualization, actionability (domain-agnostic)
 - **Domain Knowledge:** Domain-specific techniques, benchmarks, pitfalls (v0.5+)
 
+Dispatches 3 parallel reviewer subagents, fuses scores with diminishing returns and deduplication, and produces a scored review with per-lens ratings and priority fixes.
+
 **Usage:**
 ```bash
 /ds-review path/to/analysis.md
-/ds-review --domain search-ranking path/to/analysis.md  # v0.5+
+/ds-review path/to/analysis.md --mode quick --audience exec --workflow proactive
+/ds-review --domain search-ranking path/to/analysis.md  # 3-dimension review (50/25/25)
 ```
 
-**Status:** ✅ Shipped (v0.4.1)
+**Scoring:** 100-point scale with deduction tables, strength credits (capped at +15/dimension), diminishing returns, and floor rules. Calibrated through 4 rounds (R1-R4) with known baselines.
+
+**Status:** ✅ Shipped (v0.6.0)
 
 ---
 
@@ -25,18 +30,7 @@ Reviews completed DS analyses across three dimensions:
 
 Reviews SQL queries for syntax correctness and domain-specific patterns.
 
-**Checks:**
-- SQL syntax errors
-- Search-specific SQL anti-patterns
-- Performance issues
-- Alignment with domain best practices
-
-**Usage:**
-```bash
-/sql-review --domain search path/to/query.sql
-```
-
-**Status:** 🚧 Planned for Q2 2026
+**Status:** 🚧 Planned (Q2 2026)
 
 ---
 
@@ -44,42 +38,28 @@ Reviews SQL queries for syntax correctness and domain-specific patterns.
 
 Analyzes search experiment metrics and generates insights.
 
-**Workflow:**
-1. Load metrics from CSV or database
-2. Fetch Search domain context
-3. Analyze metrics, detect anomalies
-4. Generate analysis document
-5. Review analysis via DS Review agent
-6. Return analysis + review feedback
-
-**Usage:**
-```bash
-/metric-analysis experiments/ranking-v2.csv
-```
-
-**Status:** 🚧 Planned for Q2 2026
+**Status:** 🚧 Planned (Q2 2026)
 
 ---
 
 ## Shared Infrastructure
 
-### Domain Knowledge Skills
+### Domain Knowledge (`search-domain-knowledge` skill)
 
-**search-domain-knowledge** (v0.5+)
-- Search Relevance expertise: Query Understanding, Search Ranking, Search Infrastructure
-- Used by: DS review, SQL review, metric analysis agents
-- Auto-refreshed weekly (workstream) and monthly (foundational)
+Curated Search Relevance expertise consumed by all skills:
+- **Digests:** `search-ranking.md`, `query-understanding.md`, `search-cross-domain.md`
+- **Authority model:** Authoritative (full deductions) vs Advisory (capped at -2)
+- **Audience filtering:** `[audience: all]`, `[audience: ds]`, `[audience: eng]`
+- **Staleness checks:** Fresh (<14d), Warning (14-30d), Critical (>30d)
+- **Refresh:** Manual only (v0.6). Trigger via `--refresh-domain`.
 
-**Future domains:**
-- `causal-domain-knowledge` - Causal Inference
-- `nlp-domain-knowledge` - NLP
+### Review Framework (`references/framework.md`)
 
-### Review Framework
-
-**ds-review-framework**
-- Analysis and Communication rubrics
-- Scoring models, deduction tables
-- Used by: DS review agent
+Shared rubrics for the DS review skill:
+- Severity definitions (CRITICAL, MAJOR, MINOR, ADVISORY)
+- Deduction tables for 11 review lenses across 3 dimensions
+- Strength credit tables with per-dimension caps
+- Floor rules, audience personas, dimension boundary routing
 
 ---
 
@@ -87,9 +67,13 @@ Analyzes search experiment metrics and generates insights.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Shared Skills (Infrastructure Layer)              │
-│  ├── ds-review-framework                           │
-│  └── search-domain-knowledge                       │
+│  Skills (Plugin Layer)                              │
+│  ├── ds-review/                                     │
+│  │   ├── SKILL.md (orchestrator)                    │
+│  │   └── references/ (reviewers + framework)        │
+│  └── search-domain-knowledge/                       │
+│      ├── SKILL.md (consumption contract)            │
+│      └── digests/ (domain knowledge)                │
 └─────────────────────────────────────────────────────┘
          ↑              ↑              ↑
          │              │              │
@@ -97,15 +81,14 @@ Analyzes search experiment metrics and generates insights.
     │ DS     │     │ SQL    │     │ Metric      │
     │ Review │     │ Review │     │ Analysis    │
     └────────┘     └────────┘     └─────────────┘
-                                        │
-                                        ├─ calls ─→ DS Review
-                                        └─ for quality gate
+     (shipped)     (planned)       (planned)
 ```
 
 **Key relationships:**
-- All agents share `search-domain-knowledge` for consistent domain expertise
-- Metric Analysis agent calls DS Review agent as a quality gate for its output
-- DS Review is domain-agnostic; domain expertise comes from pluggable skills
+- All skills share `search-domain-knowledge` for consistent domain expertise
+- DS Review is domain-agnostic; domain expertise comes from pluggable domain skills
+- Command at `.claude/commands/ds-review.md` delegates to `skills/ds-review/SKILL.md`
+- Paths: skill-relative within skills, project-relative for cross-skill references
 
 ---
 
@@ -115,21 +98,31 @@ Analyzes search experiment metrics and generates insights.
 ds-productivity-agents/
 ├── .claude-plugin/            # Plugin manifest (for future marketplace)
 ├── .claude/commands/          # Project-level command entry points
-│   └── ds-review.md           # /ds-review command
+│   └── ds-review.md           # /ds-review command (thin, delegates to SKILL.md)
 ├── skills/                    # Skill definitions
 │   ├── ds-review/             # DS Analysis Review skill
-│   │   ├── SKILL.md           # Lead orchestrator pipeline
+│   │   ├── SKILL.md           # Lead orchestrator pipeline (10 steps)
+│   │   ├── evals/             # Eval framework (3 test cases, 39 assertions)
 │   │   └── references/        # Reviewer prompts + framework
-│   └── search-domain-knowledge/  # Domain expertise skill
+│   │       ├── framework.md   # Deduction tables, credits, floor rules
+│   │       ├── analysis-reviewer.md
+│   │       ├── communication-reviewer.md
+│   │       └── domain-expert-reviewer.md
+│   └── search-domain-knowledge/
 │       ├── SKILL.md           # Consumption contract
-│       ├── references/        # Domain index
+│       ├── references/        # Domain index (domain-index.yaml)
 │       └── digests/           # Domain knowledge digests
+│           ├── search-ranking.md
+│           ├── query-understanding.md
+│           └── search-cross-domain.md
 ├── dev/                       # Development artifacts
-│   ├── backlog.md
-│   ├── sessions/
-│   ├── test-results/
-│   └── decisions/
-└── docs/                      # Design docs, plans
+│   ├── backlog.md             # Priorities + IC9 findings
+│   ├── sessions/              # Session logs
+│   ├── reviews/               # Calibration reviews
+│   ├── test-fixtures/         # Real + synthetic test documents
+│   ├── test-results/          # Calibration results (R1-R4)
+│   └── decisions/             # Architecture Decision Records
+└── docs/                      # Design docs, plans, handovers
 ```
 
 ---
@@ -137,21 +130,22 @@ ds-productivity-agents/
 ## Current Status
 
 **Shipped:**
-- v0.6.0: Plugin skill set refactoring (2 skills: ds-review, search-domain-knowledge)
-- v0.5: Domain Knowledge dimension (3rd review dimension)
-- v0.4.1: DS Analysis Review Agent (2-dimension scoring)
+- v0.6.0: Plugin skill set refactoring — 2 skills, thin command, credit cap fix (+25→+15), eval framework
+- v0.5.0: Domain Knowledge dimension — 3rd review dimension, search domain digests, authority model
+- v0.4.1: Calibrated scoring — 4 calibration rounds, diminishing returns, strength credits
 
-**In Progress:**
-- v0.5: Domain Knowledge dimension (3rd review dimension)
-  - Search domain knowledge skill
-  - Domain expert reviewer subagent
-  - 50/25/25 weighted scoring
+**Calibration Baselines (R4):**
+| Fixture | Score | Consistency |
+|---------|-------|-------------|
+| Vanguard A/B test | 57-59 | ±2 |
+| Airbnb interleaving | 93-95 | ±2 |
+| Rossmann sales | 63-71 | — |
 
 **Planned (Q2 2026):**
-- SQL Review Agent
-- Search Metric Analysis Agent
+- SQL Review skill
+- Search Metric Analysis skill
 
-See `dev/backlog.md` for detailed roadmap.
+See `dev/backlog.md` for detailed roadmap including IC9 Search SME findings.
 
 ---
 
@@ -160,13 +154,14 @@ See `dev/backlog.md` for detailed roadmap.
 ### Session Start Protocol
 1. Read `dev/backlog.md` for current priorities
 2. Read latest `dev/sessions/*.md` for context
-3. Check `dev/decisions/` for architectural decisions
+3. Read `docs/handover-*.md` for most recent handover
+4. Check `dev/decisions/` for architectural decisions
 
 ### Session End Protocol
 1. Update `dev/backlog.md`
 2. Create `dev/sessions/YYYY-MM-DD-description.md`
 3. Update `CHANGELOG.md` if anything shipped
-4. Create `dev/decisions/ADR-*.md` if design choice was made
+4. Create handover prompt at `docs/handover-YYYY-MM-DD-topic.md`
 
 ---
 
