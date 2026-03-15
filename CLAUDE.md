@@ -1,24 +1,25 @@
 # DS Productivity Agents
 
 ## What This Is
-A suite of Claude Code agents for DS productivity in Search Relevance:
-- **DS Analysis Review Agent:** Reviews DS analyses across methodology, logic, communication, and domain expertise
-- **SQL Review Agent:** (Q2 2026) Reviews SQL queries for syntax and domain-specific patterns
-- **Search Metric Analysis Agent:** (Q2 2026) Analyzes search metrics and generates insights
+A Claude Code plugin (skill set) for DS productivity in Search Relevance:
+- **DS Analysis Review** (`ds-productivity:ds-review`): Reviews DS analyses across methodology, logic, communication, and domain expertise
+- **Search Domain Knowledge** (`ds-productivity:search-domain-knowledge`): Curated domain expertise for Search Relevance
+- **SQL Review:** (Q2 2026) Reviews SQL queries for syntax and domain-specific patterns
+- **Search Metric Analysis:** (Q2 2026) Analyzes search metrics and generates insights
 
-All agents share domain knowledge infrastructure for consistent Search Relevance expertise.
+All skills share domain knowledge infrastructure for consistent Search Relevance expertise.
 
-## Agent Architecture
+## Skill Architecture
 
 ### DS Analysis Review
-- ds-review-lead.md — orchestrator (invoked via /ds-review command)
-- analysis-reviewer.md — subagent for analysis dimension
-- communication-reviewer.md — subagent for communication dimension
-- domain-expert-reviewer.md — subagent for domain dimension (v0.5+)
+- skills/ds-review/SKILL.md — orchestrator (invoked via /ds-review command or ds-productivity:ds-review skill)
+- skills/ds-review/references/analysis-reviewer.md — subagent for analysis dimension
+- skills/ds-review/references/communication-reviewer.md — subagent for communication dimension
+- skills/ds-review/references/domain-expert-reviewer.md — subagent for domain dimension (v0.5+)
 
-### Shared Skills
-- ds-review-framework — shared rubrics and personas (auto-loaded)
-- search-domain-knowledge — Search Relevance domain expertise (v0.5+)
+### Shared References
+- skills/ds-review/references/framework.md — shared rubrics, deductions, credits, personas
+- skills/search-domain-knowledge/ — Search Relevance domain expertise (v0.5+)
 
 ## Current State
 See dev/backlog.md for priorities.

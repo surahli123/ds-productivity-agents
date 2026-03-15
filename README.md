@@ -113,18 +113,23 @@ Analyzes search experiment metrics and generates insights.
 
 ```
 ds-productivity-agents/
-├── shared/skills/          # Reusable infrastructure
-├── agents/                 # Agent implementations
-│   ├── ds-review/
-│   ├── sql-review/
-│   └── search-metric-analysis/
-├── .claude/commands/       # Command entry points
-├── dev/                    # Development artifacts
+├── .claude-plugin/            # Plugin manifest (for future marketplace)
+├── .claude/commands/          # Project-level command entry points
+│   └── ds-review.md           # /ds-review command
+├── skills/                    # Skill definitions
+│   ├── ds-review/             # DS Analysis Review skill
+│   │   ├── SKILL.md           # Lead orchestrator pipeline
+│   │   └── references/        # Reviewer prompts + framework
+│   └── search-domain-knowledge/  # Domain expertise skill
+│       ├── SKILL.md           # Consumption contract
+│       ├── references/        # Domain index
+│       └── digests/           # Domain knowledge digests
+├── dev/                       # Development artifacts
 │   ├── backlog.md
 │   ├── sessions/
 │   ├── test-results/
 │   └── decisions/
-└── docs/                   # Design docs, plans
+└── docs/                      # Design docs, plans
 ```
 
 ---
@@ -132,6 +137,8 @@ ds-productivity-agents/
 ## Current Status
 
 **Shipped:**
+- v0.6.0: Plugin skill set refactoring (2 skills: ds-review, search-domain-knowledge)
+- v0.5: Domain Knowledge dimension (3rd review dimension)
 - v0.4.1: DS Analysis Review Agent (2-dimension scoring)
 
 **In Progress:**
