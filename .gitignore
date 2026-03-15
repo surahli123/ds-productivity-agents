@@ -1,9 +1,8 @@
-# Real test fixtures may contain sensitive company data
-dev/test-fixtures/real/*.md
-!dev/test-fixtures/real/README.md
+# Development artifacts (kept locally, not on GitHub)
+dev/
 
-# Internal working docs (kept locally, not on GitHub)
-dev/internal/
+# Eval workspace (generated output)
+ds-review-workspace/
 
 # Git worktrees
 .worktrees/

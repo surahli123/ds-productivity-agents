@@ -117,14 +117,7 @@ ds-productivity-agents/
 │           ├── search-ranking.md
 │           ├── query-understanding.md
 │           └── search-cross-domain.md
-├── dev/                       # Development artifacts
-│   ├── backlog.md             # Priorities + IC9 findings
-│   ├── sessions/              # Session logs
-│   ├── reviews/               # Calibration reviews
-│   ├── test-fixtures/         # Real + synthetic test documents
-│   ├── test-results/          # Calibration results (R1-R4)
-│   └── decisions/             # Architecture Decision Records
-└── docs/                      # Design docs, plans, handovers
+└── docs/                      # Design docs and plans
 ```
 
 ---
@@ -187,7 +180,7 @@ The refactoring was validated with both structural and scoring tests to ensure n
 | Principal AI Engineer (7.6/10) | Plugin architecture | Flagged `${CLAUDE_PLUGIN_ROOT}` unreliability — led to Option B (project-relative paths) |
 | IC9 Search SME | Domain depth | Flagged domain knowledge content gaps — captured in backlog for v1.0 |
 
-Eval definitions at `skills/ds-review/evals/evals.json`. Full review artifacts in `dev/reviews/2026-03-14-skill-set-refactoring/`.
+Eval definitions at `skills/ds-review/evals/evals.json`.
 
 ---
 
@@ -208,24 +201,6 @@ Eval definitions at `skills/ds-review/evals/evals.json`. Full review artifacts i
 **Planned (Q2 2026):**
 - SQL Review skill
 - Search Metric Analysis skill
-
-See `dev/backlog.md` for detailed roadmap including IC9 Search SME findings.
-
----
-
-## Development
-
-### Session Start Protocol
-1. Read `dev/backlog.md` for current priorities
-2. Read latest `dev/sessions/*.md` for context
-3. Read `docs/handover-*.md` for most recent handover
-4. Check `dev/decisions/` for architectural decisions
-
-### Session End Protocol
-1. Update `dev/backlog.md`
-2. Create `dev/sessions/YYYY-MM-DD-description.md`
-3. Update `CHANGELOG.md` if anything shipped
-4. Create handover prompt at `docs/handover-YYYY-MM-DD-topic.md`
 
 ---
 
