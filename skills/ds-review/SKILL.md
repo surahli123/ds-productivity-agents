@@ -205,7 +205,7 @@ When 3 subagents dispatched (--domain active):
    - First 30 points of deductions: apply at 100% (effective = raw)
    - Points 31-50: apply at 75% (effective = 30 + (raw - 30) × 0.75)
    - Points 51+: apply at 50% (effective = 45 + (raw - 50) × 0.50)
-   Then add strength credits from the STRENGTH LOG (capped at +25 per dimension):
+   Then add strength credits from the STRENGTH LOG (capped at +15 per dimension):
    **dimension_score = 100 - effective_deductions + credits** (minimum 0, maximum 100)
    If the subagent's declared score differs from this calculation, use THIS calculation.
    Show the math: `Raw deductions: X → Effective (DR): Y | Credits: +Z | Score: W`
