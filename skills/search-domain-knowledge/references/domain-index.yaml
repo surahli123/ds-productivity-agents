@@ -1,0 +1,243 @@
+# =============================================================================
+# Domain Knowledge Index — Search Relevance
+# =============================================================================
+#
+# Purpose:
+#   Curated index of source documents that power the search-domain-knowledge
+#   skill. Agents reference this index to load domain-specific context when
+#   reviewing DS analyses related to search ranking and query understanding.
+#
+# Design Decisions:
+#   - A2: Audience tags (all, ds, eng) control which digest sections load
+#         based on the review audience. Token budgets cap digest size.
+#   - A3: Manual-only refresh — no auto-discovery of new sources.
+#   - A4: No team roster — LLM content scoring determines relevance.
+#   - A5: Cross-domain sources get an additive 1,500-token budget on top
+#         of per-domain budgets.
+#
+# Source Tiers:
+#   - foundational: Seminal papers/surveys that define core concepts.
+#                   Rarely change. High knowledge density.
+#   - workstream:   Industry blog posts and applied case studies.
+#                   Show how concepts are used in practice.
+#
+# Importance Formula (used during digest generation):
+#   importance = 0.6 * review_impact + 0.4 * knowledge_density
+#
+# Source IDs:
+#   SR-FOUND-xxx  = Search Ranking, Foundational
+#   SR-WORK-xxx   = Search Ranking, Workstream
+#   QU-FOUND-xxx  = Query Understanding, Foundational
+#   QU-WORK-xxx   = Query Understanding, Workstream
+#   XD-FOUND-xxx  = Cross-Domain, Foundational
+#
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# Refresh Configuration
+# -----------------------------------------------------------------------------
+# Controls how digests are generated and retained.
+# token_budget: Max tokens per domain digest. Prevents context window bloat.
+# cross_domain_budget: Additive budget for sources that span multiple domains.
+# retain_versions: Number of past digest versions to keep for rollback.
+# refresh_mode: "manual" = digests regenerated only on explicit command.
+# -----------------------------------------------------------------------------
+refresh:
+  token_budget_per_domain: 8000
+  cross_domain_budget: 1500
+  retain_versions: 4
+  refresh_mode: manual
+
+
+# =============================================================================
+# DOMAIN: search-ranking
+# =============================================================================
+# Covers ranking models, evaluation metrics (NDCG, ERR, MRR), position bias,
+# learning-to-rank algorithms, and click models. This is the core domain for
+# any DS work on search result ordering and relevance scoring.
+# =============================================================================
+domains:
+
+  search-ranking:
+    description: >
+      Search ranking models, evaluation metrics, position bias, learning-to-rank,
+      and click models. Core domain for DS work on result ordering and relevance.
+
+    sources:
+
+      # -- Foundational Sources ------------------------------------------------
+      # Seminal papers that define the field. High knowledge density, stable.
+
+      - id: SR-FOUND-001
+        title: "Cumulated Gain-Based Evaluation of IR Techniques"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.1145/582415.582418
+        # Järvelin & Kekäläinen (2002), TOIS.
+        # Introduced NDCG — the most widely used graded relevance metric.
+        # Essential for any DS working on search evaluation.
+
+      - id: SR-FOUND-002
+        title: "Expected Reciprocal Rank for Graded Relevance"
+        tier: foundational
+        audience: ds
+        url: https://doi.org/10.1145/1645953.1646033
+        # Chapelle et al. (2009), CIKM.
+        # Introduced ERR, which models user stopping behavior as a cascade.
+        # Key alternative to NDCG when result independence assumption breaks.
+
+      - id: SR-FOUND-003
+        title: "Evaluating the Accuracy of Implicit Feedback from Clicks and Query Reformulations"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.1145/1229179
+        # Joachims et al. (2007), TOIS.
+        # Foundational work on position bias in click data. Critical for
+        # anyone using clicks as relevance signals (which is everyone).
+
+      - id: SR-FOUND-004
+        title: "From RankNet to LambdaRank to LambdaMART: An Overview"
+        tier: foundational
+        audience: ds
+        url: https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/
+        # Burges (2010), MSR Technical Report.
+        # The canonical reference for gradient-boosted ranking models.
+        # LambdaMART remains a strong baseline in production systems.
+
+      - id: SR-FOUND-005
+        title: "Click Models for Web Search"
+        tier: foundational
+        audience: ds
+        url: https://doi.org/10.2200/S00654ED1V01Y201507ICR043
+        # Chuklin et al. (2015), Morgan & Claypool Synthesis Lectures.
+        # Comprehensive survey of click models — how to interpret user
+        # click behavior as relevance signals while accounting for bias.
+
+      # -- Workstream Sources --------------------------------------------------
+      # Industry case studies showing how these concepts play out in practice.
+
+      - id: SR-WORK-001
+        title: "Applying Deep Learning to Airbnb Search"
+        tier: workstream
+        audience: all
+        url: https://doi.org/10.1145/3394486.3403305
+        # Haldar et al. (2020), KDD.
+        # Airbnb's journey from GBDT to deep learning for search ranking.
+        # Great example of pragmatic ML engineering tradeoffs in production.
+
+      - id: SR-WORK-002
+        title: "From GBDT to Deep Learning: Evolving Search Ranking at Etsy"
+        tier: workstream
+        audience: all
+        url: https://www.etsy.com/codeascraft/from-gbdt-to-deep-learning-evolving-search-ranking-at-etsy
+        # Etsy engineering blog on transitioning ranking models.
+        # Practical lessons on when deep learning is worth the complexity
+        # over tree-based models in e-commerce search.
+
+
+  # ===========================================================================
+  # DOMAIN: query-understanding
+  # ===========================================================================
+  # Covers query classification, intent detection, query rewriting, spell
+  # correction, and semantic understanding. This domain addresses what the
+  # user meant, as opposed to how to order results (search-ranking).
+  # ===========================================================================
+
+  query-understanding:
+    description: >
+      Query classification, intent detection, rewriting, spell correction,
+      and semantic understanding. Addresses what the user meant before ranking.
+
+    sources:
+
+      # -- Foundational Sources ------------------------------------------------
+
+      - id: QU-FOUND-001
+        title: "A Taxonomy of Web Search"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.1145/792550.792552
+        # Broder (2002), SIGIR Forum.
+        # The navigational / informational / transactional taxonomy.
+        # Still the starting point for any query intent classification work.
+
+      - id: QU-FOUND-002
+        title: "Determining the Informational, Navigational, and Transactional Intent of Web Queries"
+        tier: foundational
+        audience: ds
+        url: https://doi.org/10.1016/j.ipm.2007.07.015
+        # Jansen et al. (2008), JASIST.
+        # Large-scale empirical validation of Broder's taxonomy.
+        # Shows how to operationalize intent classification at scale.
+
+      - id: QU-FOUND-003
+        title: "Document Expansion by Query Prediction"
+        tier: foundational
+        audience: ds
+        url: https://arxiv.org/abs/1904.08375
+        # Nogueira & Cho (2019), arXiv.
+        # BERT-based re-ranking and query prediction. Demonstrates how
+        # language models can bridge the query-document vocabulary gap.
+        # Relevant context for understanding modern QU approaches.
+
+      - id: QU-FOUND-004
+        title: "Spell Correction for Query Reformulation in E-Commerce Search"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.1145/3511808.3557544
+        # Pande et al. (2022), CIKM.
+        # Practical spell correction in e-commerce — where misspellings
+        # directly impact revenue. Shows domain-specific QU challenges.
+
+      # -- Workstream Sources --------------------------------------------------
+
+      - id: QU-WORK-001
+        title: "SearchSage: Learning Search Query Representations at Pinterest"
+        tier: workstream
+        audience: all
+        url: https://medium.com/pinterest-engineering/searchsage-learning-search-query-representations-at-pinterest-654f2bb887fc
+        # Pinterest Engineering (2023).
+        # How Pinterest learns query embeddings for semantic search.
+        # Applied example of moving from keyword to semantic QU.
+
+
+  # ===========================================================================
+  # DOMAIN: search-cross-domain
+  # ===========================================================================
+  # Sources that span both ranking and query understanding. These provide
+  # evaluation frameworks and methodologies used across the full search stack.
+  # Gets an additive 1,500-token budget (per decision A5).
+  # ===========================================================================
+
+  search-cross-domain:
+    description: >
+      Cross-cutting sources spanning ranking and query understanding.
+      Evaluation frameworks and methodologies for the full search stack.
+    applies_to:
+      - search-ranking
+      - query-understanding
+
+    sources:
+
+      # -- Foundational Sources ------------------------------------------------
+
+      - id: XD-FOUND-001
+        title: "Large-Scale Validation and Analysis of Interleaved Search Evaluation"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.1145/2094072.2094078
+        # Chapelle et al. (2012), TOIS.
+        # Validates interleaving as a reliable online evaluation method.
+        # Critical for anyone running search experiments — shows when
+        # interleaving agrees/disagrees with editorial judgments.
+
+      - id: XD-FOUND-002
+        title: "RAGAS: Automated Evaluation of Retrieval Augmented Generation"
+        tier: foundational
+        audience: all
+        url: https://doi.org/10.18653/v1/2024.eacl-main.280
+        # Es et al. (2024), EACL.
+        # Framework for evaluating RAG systems — increasingly relevant
+        # as search systems incorporate generative components.
+        # Bridges traditional IR evaluation with LLM-era search.
