@@ -1,6 +1,8 @@
 # DS Productivity Agents
 
-A Claude Code plugin skill set for data science workflows in Search Relevance. Built on shared domain knowledge for Query Understanding, Search Ranking, and Search Infrastructure.
+A Claude Code plugin skill set for data science workflows in Search Relevance. Refactored from a custom multi-agent system (`agents/` + `shared/skills/`) into a portable, eval-validated skill set architecture (`skills/`).
+
+**v0.6 Highlights:** 2 independent skills, 4 calibration rounds, 39/39 structural eval assertions, 4 independent expert reviews (DS Lead, PM Lead, Principal AI Engineer, IC9 Search SME).
 
 ## Skills
 
@@ -127,10 +129,72 @@ ds-productivity-agents/
 
 ---
 
+## v0.6 Refactoring: Agents → Skills
+
+The system was originally built as a custom multi-agent architecture with agent prompts in `agents/`, shared rubrics in `shared/skills/`, and a 44-line command dispatcher. v0.6 refactored everything into a Claude Code plugin skill set — a portable, standards-compliant structure that follows the same patterns as [superpowers](https://github.com/obra/superpowers) and [kaizen](https://github.com/NeoLabHQ/context-engineering-kit).
+
+**What changed:**
+- `agents/ds-review/` (4 agent prompts) → `skills/ds-review/references/` (co-located with SKILL.md)
+- `shared/skills/ds-review-framework/SKILL.md` (338-line rubric) → `skills/ds-review/references/framework.md`
+- `shared/skills/search-domain-knowledge/` → `skills/search-domain-knowledge/` (standalone skill)
+- 44-line command → 10-line thin command (delegates to SKILL.md, single source of truth)
+- Credit cap bug fixed: +25 → +15 across all files (R4 calibration validated +15)
+- ~35 bare `SKILL.md` references disambiguated to `framework.md` (preventing subagent confusion)
+
+**Why:** Portability (skill works from any project), clean separation (domain knowledge is independent of the review pipeline), and extensibility (new skills like SQL Review drop in under `skills/` without touching existing code).
+
+### Validation
+
+The refactoring was validated with both structural and scoring tests to ensure nothing broke:
+
+**Structural Contract Eval (39/39 PASS):**
+
+| Eval | Document | Config | Assertions | Code Path |
+|------|----------|--------|------------|-----------|
+| Vanguard | A/B test (1,125 words) | quick/tech/reactive | 17/17 | 2-dim, floor rules, conditional credits |
+| Rossmann | ML forecasting (7,452 words) | quick/mixed/general | 11/11 | 2-dim, credit cap maxing, large doc Tier 3 |
+| Eppo | Search ranking (550 words) | quick/ds/proactive+domain | 11/11 | 3-dim, domain digests, cross-dim dedup, floor override |
+
+**Scoring Pipeline Features Validated:**
+
+| Feature | Status |
+|---------|--------|
+| 2-dimension scoring (50/50) | ✅ |
+| 3-dimension scoring (50/25/25) | ✅ |
+| Diminishing returns formula | ✅ |
+| Credit cap (+15 per dimension) | ✅ |
+| Conditional credit rule (halved for unvalidated experiments) | ✅ |
+| Floor rules (confirming, non-overriding, overriding) | ✅ all 3 variants |
+| Cross-dimension dedup (Stage 2) | ✅ |
+| Domain digest loading + staleness warning | ✅ |
+| Skill-relative path resolution | ✅ |
+| Cross-skill path resolution | ✅ |
+
+**Baseline Comparison:**
+
+| Fixture | R4 Baseline | Post-Migration | Delta | Tolerance | Status |
+|---------|------------|----------------|-------|-----------|--------|
+| Vanguard | 57 | 59 | +2 | ±5 | ✅ PASS |
+
+### Review Process
+
+4 independent reviews informed the design before implementation:
+
+| Reviewer | Focus | Key Finding |
+|----------|-------|-------------|
+| DS Lead (8/10) | Scoring integrity | Flagged credit cap discrepancy (+25 vs +15) — fixed |
+| PM Lead (7.8/10) | Value proposition | Challenged priority vs. backlog — validated architecture investment |
+| Principal AI Engineer (7.6/10) | Plugin architecture | Flagged `${CLAUDE_PLUGIN_ROOT}` unreliability — led to Option B (project-relative paths) |
+| IC9 Search SME | Domain depth | Flagged domain knowledge content gaps — captured in backlog for v1.0 |
+
+Eval definitions at `skills/ds-review/evals/evals.json`. Full review artifacts in `dev/reviews/2026-03-14-skill-set-refactoring/`.
+
+---
+
 ## Current Status
 
 **Shipped:**
-- v0.6.0: Plugin skill set refactoring — 2 skills, thin command, credit cap fix (+25→+15), eval framework
+- v0.6.0: Plugin skill set refactoring — 2 skills, thin command, eval framework, credit cap fix
 - v0.5.0: Domain Knowledge dimension — 3rd review dimension, search domain digests, authority model
 - v0.4.1: Calibrated scoring — 4 calibration rounds, diminishing returns, strength credits
 
