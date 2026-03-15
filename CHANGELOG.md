@@ -4,6 +4,34 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### v0.6.0 — Plugin Skill Set Refactoring (2026-03-14)
+
+**Status:** COMPLETE. Migrated from custom agents/ + shared/skills/ to Claude Code plugin skill set.
+
+#### Structural Changes
+- **New plugin structure** — `.claude-plugin/plugin.json` + `skills/` + thin command
+- **2 skills created** — `ds-review` (orchestrator + 3 reviewer references + framework) and `search-domain-knowledge` (digests + domain index + consumption contract)
+- **Thin command** — `.claude/commands/ds-review.md` reduced from 44 to 10 lines, delegates to SKILL.md
+- **Path resolution** — skill-relative within skills, project-relative for cross-skill and subagent dispatch
+- **Old directories removed** — `agents/`, `shared/`, `plugin/`, `dist/`
+
+#### Bug Fixes
+- **Credit cap aligned** — +25 → +15 in orchestrator Step 9 and all 3 reviewer files. Now consistent with framework.md Section 2b. (DS Lead recommendation, R4 calibration validated +15.)
+- **Bare SKILL.md disambiguation** — ~35 bare `SKILL.md` references in reviewer files updated to `framework.md` to avoid ambiguity with orchestrator SKILL.md.
+
+#### Documentation
+- CLAUDE.md, README.md updated for skill architecture
+- `.claude/rules/plugin-conventions.md` rewritten for skill-based development
+- IC9 Search SME findings captured in backlog (domain knowledge gaps, missing feedback loop)
+
+#### Review Process
+- 4 independent reviews: DS Lead, PM Lead, Principal AI Engineer, IC9 Search SME
+- Plugin discovery mechanism validated (Task 0 gate)
+- Path resolution strategy confirmed (skill-relative, no ${CLAUDE_PLUGIN_ROOT})
+- Verify-before-delete ordering applied
+
+---
+
 ### v0.5 — Domain Expert Agent: Design & Layer 1 Implementation (2026-02-16 to 2026-02-21)
 
 **Status:** COMPLETE. Layer 1 + Layer 2 + full `--domain` calibration passed. Ship-ready.

@@ -347,6 +347,36 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
 - Communication dimension variance: 76-81 across 4 identical runs → highest variance dimension but within tolerance
 - No format detection needed: score differentiation is driven by content quality, not format
 
+## IC9 Search SME Findings (2026-03-14)
+
+Source review: `dev/reviews/2026-03-14-skill-set-refactoring/ic9-search-sme.md`
+
+### Can Fix During v0.6 Refactoring (one-line changes in files already being edited)
+- [ ] **Exploration/exploitation separation:** Add contextual CRITICAL rule for launch decisions (like position bias Rule 13 pattern) — in domain-expert-reviewer.md
+- [ ] **Multi-objective tradeoff:** Consider bumping from MINOR (-7) to MAJOR (-10) — in framework.md deduction table *(IC9 recommendation, product owner to decide)*
+
+### v1.0: Domain Knowledge Content Expansion
+- [ ] **Guardrail metrics coverage:** Add dwell time, pogo-sticking, session success, zero-result rate to search-ranking digest
+- [ ] **Engagement vs. satisfaction decomposition:** Add coverage of the most common search metric trap (engagement up, satisfaction down)
+- [ ] **Feature evaluation methodology:** Add ablation, holdout, partial dependence, correlated features guidance
+- [ ] **Query segment analysis:** Add practical guidance for head/torso/tail metric variance, per-segment CIs
+- [ ] **Search-specific causal inference pitfalls:** Add SUTVA in interleaving, non-parallel DiD trends
+- [ ] **4th domain lens — Metric Fitness:** Add lens for right metric for search sub-domain, metric pathologies (position bias in CTR, graded vs. binary in NDCG vs. MRR, proxy metric risk)
+- [ ] **Scope clarification:** Explicitly decide and document whether this is a search evaluation review system or a search relevance review system
+- [ ] **Pipeline attribution content:** Add cross-domain digest content for "NDCG up but conversion down" scenarios
+
+### v1.0: System Improvements
+- [ ] **Calibration fixture suite:** Build as first-class plugin citizens (fixtures/ directory + calibration-baselines.yaml)
+- [ ] **Historical calibration tracking:** Add structured log (fixture, expected, actual, delta, date, version)
+
+### v1.5: Architecture
+- [ ] **Feedback loop:** LLM-as-Judge auto-eval pipeline (meta-evaluation — do review scores correlate with actual document quality?)
+- [ ] **Adaptive domain weighting:** Reduce domain weight to 0% when domain reviewer finds 0 issues (eliminate ~10pt inflation on non-domain content)
+- [ ] **Retrieval-augmented digests:** Retrieve relevant sections instead of loading full digest (scales beyond 8K token budget)
+- [ ] **Cross-dimension dedup edge case:** Investigate behavior on partially-search-related analyses (domain ADVISORY -2 replacing analysis MAJOR -10)
+- [ ] **Domain knowledge skill registry:** Add --domain-skill flag for multiple domain knowledge skills (causal, NLP)
+- [ ] **Digest version garbage collection:** Add versioned file naming + cleanup in refresh workflow
+
 ### v1.0: Ship — COMPLETE (2026-02-15)
 - [x] All agents passing manual eval rubric
 - [x] Output format verified across all modes
