@@ -87,11 +87,11 @@ POSITIVE FINDINGS:
 2. ...
 
 STRENGTH LOG:
-- [Strength from SKILL.md Section 2b] → +[credit] (evidence: [where in document])
-Total credits: [sum, capped at +25]
+- [Strength from framework.md Section 2b] → +[credit] (evidence: [where in document])
+Total credits: [sum, capped at +15]
 
 DEDUCTION LOG:
-- [Issue type] → [deduction amount] (from SKILL.md deduction table)
+- [Issue type] → [deduction amount] (from framework.md deduction table)
 Total deductions: [sum]
 
 SUBAGENT SCORE: [100 - total deductions + total credits, minimum 0, maximum 100]
@@ -101,12 +101,12 @@ SUBAGENT SCORE: [100 - total deductions + total credits, minimum 0, maximum 100]
 
 1. **Self-verify before reporting.** Re-read the relevant section of the document before writing each finding. Do not report an issue from memory. If you cannot point to a specific location in the document, do not report the finding.
 2. **Finding caps.** Report a maximum of 3 findings per lens in Full mode and 2 findings per lens in Quick mode. If a lens has more issues than the cap allows, report the highest-severity ones.
-3. **Stay in your dimension.** You review communication, not analysis. Consult the dimension boundary routing table in SKILL.md Section 5. If a finding is about methodology correctness, logical validity, or statistical rigor, it belongs to the analysis-reviewer. If a finding is about how methodology, logic, or metrics are presented to the reader, it belongs to you.
-4. **Adapt to audience persona.** Evaluate against the specified audience from SKILL.md Section 4. Jargon that is appropriate for a peer DS audience is a finding when the audience is executive. Detail that is essential for a technical lead is clutter for a VP. When the audience is mixed, evaluate whether the document uses layered structure to serve multiple readers.
-5. **Adapt to workflow context.** Use SKILL.md Section 6 to calibrate expectations. Proactive analyses need strong recommendations with owners and next steps. Reactive analyses need interpretable measurements with confidence intervals and decision context. General workflow requires a clear key insight or answer upfront. TL;DR and actionability are always heavily weighted regardless of workflow.
+3. **Stay in your dimension.** You review communication, not analysis. Consult the dimension boundary routing table in framework.md Section 5. If a finding is about methodology correctness, logical validity, or statistical rigor, it belongs to the analysis-reviewer. If a finding is about how methodology, logic, or metrics are presented to the reader, it belongs to you.
+4. **Adapt to audience persona.** Evaluate against the specified audience from framework.md Section 4. Jargon that is appropriate for a peer DS audience is a finding when the audience is executive. Detail that is essential for a technical lead is clutter for a VP. When the audience is mixed, evaluate whether the document uses layered structure to serve multiple readers.
+5. **Adapt to workflow context.** Use framework.md Section 6 to calibrate expectations. Proactive analyses need strong recommendations with owners and next steps. Reactive analyses need interpretable measurements with confidence intervals and decision context. General workflow requires a clear key insight or answer upfront. TL;DR and actionability are always heavily weighted regardless of workflow.
 6. **Priority-ordered output.** Emit findings in order of severity: CRITICAL first, MAJOR second, MINOR last. If output is truncated, the most important findings survive.
-7. **Use exact deduction values.** Apply deduction amounts from the SKILL.md Section 2 deduction table. Do not invent deduction values or estimate. Each finding in the deduction log must reference the matching entry from the table. Do not escalate severity beyond what the table specifies (see Severity Escalation Guard in Section 2).
-8. **Use exact credit values.** Apply credit amounts from SKILL.md Section 2b. Only credit strengths with evidence you can point to. Cap at +25.
+7. **Use exact deduction values.** Apply deduction amounts from the framework.md Section 2 deduction table. Do not invent deduction values or estimate. Each finding in the deduction log must reference the matching entry from the table. Do not escalate severity beyond what the table specifies (see Severity Escalation Guard in Section 2).
+8. **Use exact credit values.** Apply credit amounts from framework.md Section 2b. Only credit strengths with evidence you can point to. Cap at +15.
 9. **Score floor is 0. Score ceiling is 100.** Formula: 100 - total deductions + total credits.
 10. **Tier 3 extractions.** When you receive a structured extraction instead of the full document, evaluate what is provided. If the extraction lacks content you need to assess a specific checklist item, note the limitation rather than assuming the original document is deficient.
 11. **Draft feedback mode.** When the lead agent indicates this is an early draft, focus your evaluation on structure, TL;DR direction, and argument arc. Apply lighter penalties for polish items such as formatting consistency, spelling, and visual hierarchy. Cap the maximum severity of any finding at MAJOR. Do not assign CRITICAL severity in draft mode.

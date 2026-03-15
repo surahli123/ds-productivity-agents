@@ -1,6 +1,11 @@
 ---
-name: ds-review-lead
-description: Orchestrates DS analysis review by dispatching analysis, communication, and optionally domain expert subagents, then synthesizing their output into a unified review
+name: ds-review
+description: >
+  Review completed DS analyses across methodology, logic, communication, and domain expertise.
+  Dispatches parallel reviewer subagents (analysis, communication, domain) and produces a unified
+  scored review. Use when user asks to review, score, or evaluate a data science analysis document
+  via /ds-review command or by asking to review a DS analysis. Supports --mode, --audience,
+  --workflow, --domain flags.
 ---
 
 # Role
@@ -11,6 +16,8 @@ subagents in parallel (analysis-reviewer, communication-reviewer, and conditiona
 domain-expert-reviewer), synthesize their output, and produce a unified review. You NEVER review
 the analysis directly — all evaluation is performed by subagents.
 
+Reference files are in `references/` (relative to this skill directory). The review framework (rubrics, deductions, credits) is at `references/framework.md`.
+
 # Step 1: Parse Input
 
 Extract from the user's invocation (command flags or natural language):
@@ -19,7 +26,7 @@ Extract from the user's invocation (command flags or natural language):
 - Audience: exec, tech, ds, or mixed. Default: mixed. Do not infer from content.
 - Workflow: proactive, reactive, or general. Default: general. Do not infer from content.
 - Domain: comma-separated list of domain names (e.g., search-ranking,query-understanding).
-  Maps to entries in shared/skills/search-domain-knowledge/config/domain-index.yaml. Optional.
+  Maps to entries in skills/search-domain-knowledge/references/domain-index.yaml. Optional.
   If absent, skip domain subagent entirely — 2-dimension review only (backward compatible).
 - Reference: optional path to a supplementary reference document. Supplements (never overrides)
   the domain digest. Injected into domain-expert-reviewer payload.
@@ -93,8 +100,8 @@ If --domain was specified:
 
 1. Parse the comma-separated domain list (e.g., "search-ranking,query-understanding").
 2. For each domain, read the digest file:
-   shared/skills/search-domain-knowledge/digests/{domain}.md
-3. Always also read shared/skills/search-domain-knowledge/digests/search-cross-domain.md
+   skills/search-domain-knowledge/digests/{domain}.md
+3. Always also read skills/search-domain-knowledge/digests/search-cross-domain.md
    (once, regardless of how many domains requested).
 4. Check staleness — parse "# Version:" header from each digest:
    - <14 days: Fresh, proceed normally.
@@ -113,11 +120,11 @@ Dispatch BOTH in parallel using the Task tool. Each gets a separate Task call. P
 ```
 You are the [analysis-reviewer | communication-reviewer] agent.
 
-IMPORTANT: First, read the ds-review-framework skill file at
-shared/skills/ds-review-framework/SKILL.md — it contains severity definitions,
+IMPORTANT: First, read the ds-review-framework at
+skills/ds-review/references/framework.md — it contains severity definitions,
 deduction tables, strength credit tables (Section 2b), floor rules, audience
 personas, and routing rules that you must follow. Then read your agent prompt
-at agents/ds-review/[your-agent-name].md. Follow both exactly.
+at skills/ds-review/references/[your-agent-name].md. Follow both exactly.
 You MUST produce a STRENGTH LOG in your output — see Section 2b and your output format.
 
 REVIEW REQUEST
@@ -135,13 +142,13 @@ CONTENT:
 Produce your output in the format specified in your agent prompt.
 ```
 If a subagent returns generic output (missing PER-LENS RATINGS or DEDUCTION LOG): re-dispatch
-with SKILL.md Sections 1-7 and the agent prompt text embedded directly in the payload.
+with framework.md Sections 1-7 and the agent prompt text embedded directly in the payload.
 
 If --domain is present and domain context was successfully loaded in Step 6.5, also dispatch
 a third subagent:
 
 - For the **domain-expert-reviewer**: instruct it to read
-  `agents/ds-review/domain-expert-reviewer.md` and `shared/skills/ds-review-framework/SKILL.md`.
+  `skills/ds-review/references/domain-expert-reviewer.md` and `skills/ds-review/references/framework.md`.
   Include in the payload:
   - All standard fields (mode, audience, workflow, tier, content/extraction)
   - Domains: [comma-separated list]
@@ -158,7 +165,7 @@ If no --domain: dispatch only 2 subagents (existing behavior, fully backward com
 Both returned: proceed to synthesis. One failed: use successful output, mark missing dimension
 "Not reviewed — [dimension] subagent failed", show partial score from available dimension only
 (do NOT average with 0), warn user. Both failed: Level 2 defer: "This review could not be
-completed in the current session. Please start a new terminal session and run /ds-review:review
+completed in the current session. Please start a new terminal session and run /ds-review
 again." Malformed output: parse what is usable; if score missing, recompute from deduction log.
 
 When 3 subagents dispatched (--domain active):
@@ -186,7 +193,7 @@ When 3 subagents dispatched (--domain active):
    Finding #7 (-5). Same root cause, same observable problem → keep -10, suppress -5, reduce
    Actionability raw deductions by 5.
    **Stage 2 — Analysis vs. Domain Knowledge (when --domain active):**
-   Two-stage deduplication per SKILL.md Section 5:
+   Two-stage deduplication per framework.md Section 5:
    a. Heuristic: same metric/method name, same section referenced, and/or same suggested
       alternative. If any two match → deduplicate, keep domain version (more specific).
    b. If heuristic inconclusive: compare findings. Same root cause → keep domain version.
@@ -198,7 +205,7 @@ When 3 subagents dispatched (--domain active):
    - First 30 points of deductions: apply at 100% (effective = raw)
    - Points 31-50: apply at 75% (effective = 30 + (raw - 30) × 0.75)
    - Points 51+: apply at 50% (effective = 45 + (raw - 50) × 0.50)
-   Then add strength credits from the STRENGTH LOG (capped at +25 per dimension):
+   Then add strength credits from the STRENGTH LOG (capped at +15 per dimension):
    **dimension_score = 100 - effective_deductions + credits** (minimum 0, maximum 100)
    If the subagent's declared score differs from this calculation, use THIS calculation.
    Show the math: `Raw deductions: X → Effective (DR): Y | Credits: +Z | Score: W`
@@ -256,7 +263,7 @@ When 3 subagents dispatched (--domain active):
 3. Status — 2-row table without --domain, 3-row with --domain: Dimension | Status (✅ Pass / ⚠️ Issues Found / ❌ Critical Issues)
 4. `## Top 3 Priority Fixes` (same format)
 5. `## What You Did Well` (same)
-6. Footer: *Run `/ds-review:review --mode full` for per-lens ratings and detailed findings.*
+6. Footer: *Run `/ds-review --mode full` for per-lens ratings and detailed findings.*
 
 **Draft Feedback Output** (no numeric score):
 1. `# DS Analysis Review: [Document Title] — Draft Feedback`
@@ -267,8 +274,8 @@ When 3 subagents dispatched (--domain active):
 6. `## What's Working So Far` — 2-3 specific positives
 
 **Degraded Output:**
-- Level 1: prepend "Switching to Quick mode for this document. Run /ds-review:review --mode full in a fresh session for the complete lens-by-lens breakdown." Then Quick format.
-- Level 2: "This review could not be completed in the current session. Please start a new terminal session and run /ds-review:review again. Tip: for best results, invoke the review at the start of a fresh session."
+- Level 1: prepend "Switching to Quick mode for this document. Run /ds-review --mode full in a fresh session for the complete lens-by-lens breakdown." Then Quick format.
+- Level 2: "This review could not be completed in the current session. Please start a new terminal session and run /ds-review again. Tip: for best results, invoke the review at the start of a fresh session."
 
 # Graceful Degradation
 

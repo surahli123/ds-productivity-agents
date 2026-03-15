@@ -184,6 +184,13 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
   - Verified in both full and quick mode
   - Merged to main via PR #1
 
+### To Do — Dogfood (Blocked: Needs User-Authored Analysis)
+- [ ] **Dogfood test:** Run `/ds-review --mode quick --domain search-ranking` on a real analysis the user wrote
+  - Existing fixtures are all blog posts / Kaggle notebooks — not suitable for author-perspective dogfood
+  - User needs to provide or paste their own search relevance analysis
+  - Goal: evaluate output format, finding quality, and actionability from the author's perspective
+  - Results feed directly into P1 Output Restructure priorities
+
 ### To Do — P1 Items (Post-Calibration)
 - [ ] **P1: Output Restructure — Phase 2** (from UX reviewer feedback)
   - Compress per-lens detail to 1-2 sentences
@@ -303,19 +310,72 @@ Last updated: 2026-02-21 (PR #4 merged, R4 domain calibration passed)
   - Domain reviewer added genuine value vs 2-dimension review
 - [x] **Pushed to remote** — all changes on main
 
-#### To Do — R4 Extended Calibration (NEXT UP)
-- [ ] **Primary tuning fix:** Reduce credit cap from +25 → +15 per dimension (addresses R3 inflation)
-- [ ] **Secondary tuning (if needed):** Increase 2-3 MAJOR deductions by +2 each
-- [ ] **Re-run all 6 R3 fixtures** with `--domain search-ranking` for cross-genre comparison
-- [ ] **Cross-run consistency:** Same doc 3x with `--domain`, verify scores within ±10
-- [ ] Evaluate whether recalibrated scores are reasonable across genres without format detection
-- [ ] If still off: design `--format` parameter or auto-detection (ADR needed)
+#### Done — R4 Extended Calibration (2026-02-21)
+- [x] **Primary tuning fix:** Reduce credit cap from +25 → +15 per dimension — ACCEPTED
+  - Vanguard: 72 → 57 (target 55-65) ✅
+  - Meta: 63 → 60 (target 60-70) ✅
+  - Rossmann: 86 → 63 (target 65-75, 2 pts below) ≈✅
+- [x] **Secondary tuning not needed** — primary fix sufficient
+- [x] **3 search-domain test fixtures created** for `--domain` calibration
+  - `airbnb-search-interleaving.md`, `atlassian-rovo-search-relevance.md`, `eppo-search-ranking-experiments.md`
+- Session log: `dev/sessions/2026-02-21-r4-credit-cap-calibration.md`
 
-#### Calibration Watch Items (Monitor During R4, Don't Pre-Fix)
-- Credit-to-deduction ratio: domain credits (+5) easier to earn than analysis credits (+8). Watch for score inflation.
-- Position bias contextual rule (CRITICAL vs MAJOR) may be hard for reviewer to calibrate consistently.
-- Multi-objective tradeoffs at MINOR (-7) may need bumping if frequently missed.
-- Head-tail distribution emphasis: if tail queries underweighted, consider dedicated deduction row.
+#### Done — R4 Domain Calibration with `--domain search-ranking` (2026-02-21)
+- [x] **Phase 1: 3 search fixtures WITH `--domain search-ranking`**
+  - Airbnb Interleaving: 95 (A:100, C:79, D:100)
+  - Atlassian Rovo: 88 (A:100, C:67, D:83)
+  - Eppo Search Experiments: 60 (A:57, C:66, D:58)
+- [x] **Phase 2: 3 core fixtures WITH `--domain search-ranking`** (cross-genre)
+  - Vanguard: 64 (A:49, C:58, D:100) — baseline 57, inflation +10
+  - Meta: 75 (A:70, C:60, D:100) — baseline 60, inflation +10
+  - Rossmann: 83 (A:86, C:61, D:100) — baseline 63, inflation +9
+  - Domain reviewer correctly finds 0 issues on non-search content
+  - ~10 point inflation from 50/25/25 weighting (acceptable: --domain is opt-in)
+- [x] **Phase 3: 3 consistency runs** (Airbnb fixture 3x)
+  - Scores: 95, 94, 93 — spread of 2 points (pass criteria: ±10) ✅
+- [x] **Phase 4: Evaluation** — SHIP AS-IS
+  - Domain adds genuine value on search content ✅
+  - Graceful non-search handling (0 false positives) ✅
+  - Highly stable (2-point spread) ✅
+  - 50/25/25 weighting produces sensible scores ✅
+- Session log: `dev/sessions/2026-02-21-r4-domain-calibration-full.md`
+
+#### Calibration Watch Items — R4 Observations
+- Credit-to-deduction ratio: domain credits earned at +15 cap on all search fixtures → working as intended
+- Multi-objective tradeoffs at MINOR (-7): fired consistently across domain reviewers (3/4 Airbnb runs) → no change needed
+- Domain inflation on non-search: ~10 points consistently → acceptable since --domain is opt-in
+- Communication dimension variance: 76-81 across 4 identical runs → highest variance dimension but within tolerance
+- No format detection needed: score differentiation is driven by content quality, not format
+
+## IC9 Search SME Findings (2026-03-14)
+
+Source review: `dev/reviews/2026-03-14-skill-set-refactoring/ic9-search-sme.md`
+
+### Can Fix During v0.6 Refactoring (one-line changes in files already being edited)
+- [ ] **Exploration/exploitation separation:** Add contextual CRITICAL rule for launch decisions (like position bias Rule 13 pattern) — in domain-expert-reviewer.md
+- [ ] **Multi-objective tradeoff:** Consider bumping from MINOR (-7) to MAJOR (-10) — in framework.md deduction table *(IC9 recommendation, product owner to decide)*
+
+### v1.0: Domain Knowledge Content Expansion
+- [ ] **Guardrail metrics coverage:** Add dwell time, pogo-sticking, session success, zero-result rate to search-ranking digest
+- [ ] **Engagement vs. satisfaction decomposition:** Add coverage of the most common search metric trap (engagement up, satisfaction down)
+- [ ] **Feature evaluation methodology:** Add ablation, holdout, partial dependence, correlated features guidance
+- [ ] **Query segment analysis:** Add practical guidance for head/torso/tail metric variance, per-segment CIs
+- [ ] **Search-specific causal inference pitfalls:** Add SUTVA in interleaving, non-parallel DiD trends
+- [ ] **4th domain lens — Metric Fitness:** Add lens for right metric for search sub-domain, metric pathologies (position bias in CTR, graded vs. binary in NDCG vs. MRR, proxy metric risk)
+- [ ] **Scope clarification:** Explicitly decide and document whether this is a search evaluation review system or a search relevance review system
+- [ ] **Pipeline attribution content:** Add cross-domain digest content for "NDCG up but conversion down" scenarios
+
+### v1.0: System Improvements
+- [ ] **Calibration fixture suite:** Build as first-class plugin citizens (fixtures/ directory + calibration-baselines.yaml)
+- [ ] **Historical calibration tracking:** Add structured log (fixture, expected, actual, delta, date, version)
+
+### v1.5: Architecture
+- [ ] **Feedback loop:** LLM-as-Judge auto-eval pipeline (meta-evaluation — do review scores correlate with actual document quality?)
+- [ ] **Adaptive domain weighting:** Reduce domain weight to 0% when domain reviewer finds 0 issues (eliminate ~10pt inflation on non-domain content)
+- [ ] **Retrieval-augmented digests:** Retrieve relevant sections instead of loading full digest (scales beyond 8K token budget)
+- [ ] **Cross-dimension dedup edge case:** Investigate behavior on partially-search-related analyses (domain ADVISORY -2 replacing analysis MAJOR -10)
+- [ ] **Domain knowledge skill registry:** Add --domain-skill flag for multiple domain knowledge skills (causal, NLP)
+- [ ] **Digest version garbage collection:** Add versioned file naming + cleanup in refresh workflow
 
 ### v1.0: Ship — COMPLETE (2026-02-15)
 - [x] All agents passing manual eval rubric

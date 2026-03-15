@@ -1,0 +1,10 @@
+{
+  "name": "ds-productivity",
+  "description": "DS productivity skill set — review DS analyses across methodology, communication, and domain expertise. Shared search domain knowledge for consistent expertise.",
+  "version": "0.6.0",
+  "author": {
+    "name": "surahli"
+  },
+  "license": "MIT",
+  "keywords": ["data-science", "review", "search-relevance", "domain-knowledge", "analysis"]
+}

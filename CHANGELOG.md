@@ -4,9 +4,60 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### v0.6.0 — Plugin Skill Set Refactoring (2026-03-14)
+
+**Status:** COMPLETE. Migrated from custom agents/ + shared/skills/ to Claude Code plugin skill set.
+
+#### Structural Changes
+- **New plugin structure** — `.claude-plugin/plugin.json` + `skills/` + thin command
+- **2 skills created** — `ds-review` (orchestrator + 3 reviewer references + framework) and `search-domain-knowledge` (digests + domain index + consumption contract)
+- **Thin command** — `.claude/commands/ds-review.md` reduced from 44 to 10 lines, delegates to SKILL.md
+- **Path resolution** — skill-relative within skills, project-relative for cross-skill and subagent dispatch
+- **Old directories removed** — `agents/`, `shared/`, `plugin/`, `dist/`
+
+#### Bug Fixes
+- **Credit cap aligned** — +25 → +15 in orchestrator Step 9 and all 3 reviewer files. Now consistent with framework.md Section 2b. (DS Lead recommendation, R4 calibration validated +15.)
+- **Bare SKILL.md disambiguation** — ~35 bare `SKILL.md` references in reviewer files updated to `framework.md` to avoid ambiguity with orchestrator SKILL.md.
+
+#### Documentation
+- CLAUDE.md, README.md updated for skill architecture
+- `.claude/rules/plugin-conventions.md` rewritten for skill-based development
+- IC9 Search SME findings captured in backlog (domain knowledge gaps, missing feedback loop)
+
+#### Review Process
+- 4 independent reviews: DS Lead, PM Lead, Principal AI Engineer, IC9 Search SME
+- Plugin discovery mechanism validated (Task 0 gate)
+- Path resolution strategy confirmed (skill-relative, no ${CLAUDE_PLUGIN_ROOT})
+- Verify-before-delete ordering applied
+
+---
+
 ### v0.5 — Domain Expert Agent: Design & Layer 1 Implementation (2026-02-16 to 2026-02-21)
 
-**Status:** Layer 1 + Layer 2 complete. PR #4 merged. R4 domain calibration passed (5/5 planted issues detected).
+**Status:** COMPLETE. Layer 1 + Layer 2 + full `--domain` calibration passed. Ship-ready.
+
+#### R4 Extended Calibration (2026-02-21)
+
+- **Credit cap fix** — `shared/skills/ds-review-framework/SKILL.md` Section 2b
+  - Reduced per-dimension credit cap from +25 to +15
+  - Root cause: R3 score inflation (17-30 points above targets) from uncapped credit accumulation
+  - R4 results: Vanguard 72→57, Meta 63→60, Rossmann 86→63 (all within or ±2 of targets)
+  - Secondary fix (MAJOR deduction increases) not needed — primary fix sufficient
+- **3 search-domain test fixtures added** — `dev/test-fixtures/real/`
+  - `airbnb-search-interleaving.md` — Airbnb interleaving experiments
+  - `atlassian-rovo-search-relevance.md` — Atlassian Rovo multi-layer ranking
+  - `eppo-search-ranking-experiments.md` — Eppo search ranking experimentation guide
+
+#### Full `--domain search-ranking` Calibration (2026-02-21)
+
+- **10-run calibration matrix** completed across 4 phases
+  - Phase 1: 3 search fixtures scored 60-95 (domain adds genuine value)
+  - Phase 2: 3 non-search fixtures scored 64-83 (domain correctly finds 0 issues, ~10pt inflation from weighting)
+  - Phase 3: 3 consistency runs scored 93-95 (2-point spread, pass criteria ±10)
+  - Phase 4: All 4 criteria passed → **SHIP AS-IS**
+- **Flat parallel dispatch validated** — 9 agents dispatched simultaneously, all returned successfully
+- **Key finding:** Communication dimension has highest variance (5pt across identical runs vs 2-3pt for analysis/domain)
+- Session log: `dev/sessions/2026-02-21-r4-domain-calibration-full.md`
 
 **Goal:** Add a 3rd review dimension (Domain Knowledge) to the DS Review agent. Standalone Domain Knowledge Skill (Layer 1) that any agent can consume, plus a thin Domain Expert Reviewer subagent (Layer 2) and lead agent integration (Layer 3).
 
@@ -122,13 +173,10 @@ Layer 2 — Domain Expert Reviewer (PR #4)
 
 #### What's Next
 
-1. **R4 extended calibration** — Re-run all 6 R3 fixtures with `--domain search-ranking`
-2. **Credit cap tuning** — Reduce +25 → +15 if score inflation persists
-3. **Cross-run consistency** — Same doc 3x with `--domain`, verify ±10
-4. **Calibration watch items** (monitor, don't pre-fix):
-   - Credit-to-deduction ratio: domain credits (+5 for standard technique) may inflate scores
-   - Position bias contextual rule (CRITICAL vs MAJOR) may be hard to calibrate — watch for inconsistency
-   - Multi-objective tradeoffs at MINOR (-7) may need bumping if frequently missed
+- v0.5 is feature-complete and calibrated. Ready for production use.
+- P1 output restructure (compressed lens detail, effort-based grouping)
+- SQL Review Agent planning (Q2 2026)
+- Monitor calibration watch items during real usage
 
 ---
 

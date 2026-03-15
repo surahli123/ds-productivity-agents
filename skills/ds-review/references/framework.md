@@ -1,16 +1,3 @@
----
-name: ds-review-framework
-description: >
-  Shared rubrics, scoring tables, audience personas, and routing rules for the DS analysis
-  review agent system. Auto-loaded by ds-review-lead, analysis-reviewer, communication-reviewer,
-  and domain-expert-reviewer agents. Contains: (1) severity definitions with verdict impact
-  including ADVISORY, (2) deduction tables for 11 review lenses across analysis, communication,
-  and domain knowledge dimensions, (2b) strength credit tables, (3) floor rules, (4) audience
-  persona definitions, (5) dimension boundary routing table with cross-dimension dedup rules,
-  (6) workflow context definitions, (7) common anti-patterns, (8) Confluence structural element guide.
-auto_activate: true
----
-
 # DS Review Framework
 
 Shared knowledge for ds-review-lead, analysis-reviewer, communication-reviewer, and domain-expert-reviewer agents.
@@ -113,7 +100,7 @@ Subagents award credits for demonstrated good practices. Credits partially offse
 ensuring that analyses which do substantive work score higher than those that don't —
 even when both have gaps. Credits reflect effort and rigor that the reader benefits from.
 
-**Cap:** Maximum +25 credits per dimension. Credits beyond the cap are noted but not scored.
+**Cap:** Maximum +15 credits per dimension. Credits beyond the cap are noted but not scored.
 
 ### Analysis Dimension Credits
 
@@ -163,7 +150,7 @@ even when both have gaps. Credits reflect effort and rigor that the reader benef
 
 1. **Evidence required:** Only credit strengths you can point to in the document. No inferred credit.
 2. **Partial credit allowed:** If a strength is partially present, award half the credit value (round down).
-3. **Cap is per-dimension:** Analysis credits cap at +25. Communication credits cap at +25. Domain Knowledge credits cap at +25. Each is independent.
+3. **Cap is per-dimension:** Analysis credits cap at +15. Communication credits cap at +15. Domain Knowledge credits cap at +15. Each is independent.
 4. **Credits do not cancel floor rules:** If a CRITICAL finding triggers a floor rule (Section 3),
    the credit still applies to the numeric score, but the verdict cap remains.
 5. **Report in STRENGTH LOG:** Subagents list each credited strength with its value in the output.

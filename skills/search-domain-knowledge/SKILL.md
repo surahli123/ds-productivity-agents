@@ -4,7 +4,6 @@ description: >
   Domain knowledge for Search Relevance — curated digests of evaluation standards, methodology
   guidelines, and team learnings for search-ranking, query-understanding, and cross-domain topics.
   Pre-built digest files that any agent can consume.
-auto_activate: true
 ---
 
 # Search Domain Knowledge Skill
@@ -16,13 +15,13 @@ digests are structured, how to consume them, when they're stale, and how to refr
 
 **Architecture context:** This is Layer 1 of a 3-layer system.
 - **Layer 1 (this skill):** Standalone domain knowledge — digest files + consumption contract
-- **Layer 2 (future):** Domain Expert Reviewer — thin subagent that reads digests and scores reviews
-- **Layer 3 (future):** Lead agent integration — orchestrates multi-dimension reviews
+- **Layer 2:** Domain Expert Reviewer — `skills/ds-review/references/domain-expert-reviewer.md`
+- **Layer 3:** Lead agent integration — `ds-productivity:ds-review` skill
 
 **Key files:**
-- `shared/skills/search-domain-knowledge/SKILL.md` — this contract (you are here)
-- `shared/skills/search-domain-knowledge/config/domain-index.yaml` — curated source index
-- `shared/skills/search-domain-knowledge/digests/` — generated digest files (the product)
+- `SKILL.md` — this contract (you are here)
+- `references/domain-index.yaml` — curated source index
+- `digests/` — generated digest files (the product)
 
 ---
 
@@ -99,8 +98,8 @@ file reads with audience filtering. This keeps consumption trivial and debuggabl
 To consume one domain's knowledge (e.g., search-ranking for a DS reviewer):
 
 ```
-1. Read shared/skills/search-domain-knowledge/digests/search-ranking.md
-2. Read shared/skills/search-domain-knowledge/digests/search-cross-domain.md  (always include)
+1. Read digests/search-ranking.md
+2. Read digests/search-cross-domain.md  (always include)
 3. Filter sections by audience tag: keep [audience: all] + [audience: ds]
 4. Check staleness via Version header (see Section 3)
 ```
@@ -114,7 +113,7 @@ To consume multiple domains (e.g., both search-ranking and query-understanding):
 
 ```
 1. Read each requested domain's digest file
-2. Read shared/skills/search-domain-knowledge/digests/search-cross-domain.md  (once, not per-domain)
+2. Read digests/search-cross-domain.md  (once, not per-domain)
 3. Concatenate all content, filtering by audience tag
 4. Check staleness on each digest's Version header
 ```
@@ -179,7 +178,7 @@ the user tells the agent which domain to refresh.
 ### Process Steps
 
 ```
-1. Read shared/skills/search-domain-knowledge/config/domain-index.yaml for target domain
+1. Read references/domain-index.yaml for target domain
 2. Fetch/review each indexed source (papers, blog posts, case studies)
 3. For each source: assess importance using the scoring formula (see Section 5)
    - review_impact: How likely is it that NOT knowing this leads to review errors?
