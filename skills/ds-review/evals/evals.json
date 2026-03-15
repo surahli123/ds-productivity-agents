@@ -1,0 +1,68 @@
+{
+  "skill_name": "ds-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/ds-review dev/test-fixtures/real/vanguard-ab-test.md --mode quick --audience tech --workflow reactive",
+      "expected_output": "Quick mode review with score, verdict, status table, Top 3 fixes, and positives. Score should be ~57 (±5 from R4 calibration baseline). Should identify at least one CRITICAL for missing statistical validation.",
+      "files": ["dev/test-fixtures/real/vanguard-ab-test.md"],
+      "expectations": [
+        "Output includes a numeric score in the format 'Score: N/100' where N is between 0 and 100",
+        "Output includes exactly one verdict from: 'Good to Go', 'Minor Fix', or 'Major Rework'",
+        "Output includes severity emoji with the verdict: ✅ for Good to Go, ⚠️ for Minor Fix, or ❌ for Major Rework",
+        "Metadata line includes all of: Mode (Quick), Audience (tech), Workflow (reactive), Tier, word count, and reading time",
+        "A status table exists with exactly 2 rows: Analysis and Communication dimensions",
+        "A 'Top 3 Priority Fixes' section exists with exactly 3 numbered items",
+        "Each of the 3 priority fixes has a severity emoji prefix (❌, 🔴, or ⚠️)",
+        "A 'What You Did Well' section exists with at least 2 specific positives",
+        "Footer includes text prompting the user to run full mode for detailed findings",
+        "Score breakdown shows both dimension scores with DR (diminishing returns) calculation",
+        "Weights line shows '50% Analysis / 50% Communication' (no domain dimension)",
+        "At least one CRITICAL finding is identified (missing statistical validation is a known CRITICAL for this document)",
+        "Floor rule is noted in the output when CRITICAL findings are present",
+        "The verdict matches the score band: 0-59 = Major Rework, 60-79 = Minor Fix, 80-100 = Good to Go",
+        "The final score equals the weighted average of the dimension scores shown in the breakdown line, within ±1 for rounding",
+        "Each finding in the Top 3 Priority Fixes includes both a severity label (CRITICAL, MAJOR, or MINOR) and a numeric deduction amount (e.g., -20, -15)",
+        "All markdown tables in the output use valid syntax with pipe (|) column separators and a header separator row"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/ds-review dev/test-fixtures/real/rossmann-sales-prediction.md --mode quick --audience mixed --workflow general",
+      "expected_output": "Quick mode review with score, verdict, status table, Top 3 fixes, and positives. Default audience (mixed) and workflow (general).",
+      "files": ["dev/test-fixtures/real/rossmann-sales-prediction.md"],
+      "expectations": [
+        "Output includes a numeric score in the format 'Score: N/100' where N is between 0 and 100",
+        "Output includes exactly one verdict from: 'Good to Go', 'Minor Fix', or 'Major Rework'",
+        "Metadata line includes Mode (Quick), Audience (mixed), Workflow (general)",
+        "A status table exists with exactly 2 rows: Analysis and Communication dimensions",
+        "A 'Top 3 Priority Fixes' section exists with exactly 3 numbered items",
+        "A 'What You Did Well' section exists with at least 2 specific positives",
+        "Score breakdown shows both dimension scores with DR calculation",
+        "The verdict matches the score band: 0-59 = Major Rework, 60-79 = Minor Fix, 80-100 = Good to Go",
+        "The final score equals the weighted average of the dimension scores shown in the breakdown line, within ±1 for rounding",
+        "Each finding in the Top 3 Priority Fixes includes both a severity label (CRITICAL, MAJOR, or MINOR) and a numeric deduction amount (e.g., -20, -15)",
+        "All markdown tables in the output use valid syntax with pipe (|) column separators and a header separator row"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/ds-review dev/test-fixtures/real/eppo-search-ranking-experiments.md --mode quick --audience ds --workflow proactive --domain search-ranking",
+      "expected_output": "Quick mode review with 3 dimensions (analysis, communication, domain). Score breakdown should show 50/25/25 weights. Domain dimension should appear in status table.",
+      "files": ["dev/test-fixtures/real/eppo-search-ranking-experiments.md"],
+      "expectations": [
+        "Output includes a numeric score in the format 'Score: N/100' where N is between 0 and 100",
+        "Output includes exactly one verdict from: 'Good to Go', 'Minor Fix', or 'Major Rework'",
+        "Metadata line includes Mode (Quick), Audience (ds), Workflow (proactive)",
+        "A status table exists with exactly 3 rows: Analysis, Communication, and Domain Knowledge dimensions",
+        "Weights line shows '50% Analysis / 25% Communication / 25% Domain Knowledge'",
+        "A 'Top 3 Priority Fixes' section exists with exactly 3 numbered items",
+        "A 'What You Did Well' section exists with at least 2 specific positives",
+        "Score breakdown shows all three dimension scores with DR calculation",
+        "The final score equals the weighted average of the dimension scores shown in the breakdown line, within ±1 for rounding",
+        "Each finding in the Top 3 Priority Fixes includes both a severity label (CRITICAL, MAJOR, or MINOR) and a numeric deduction amount (e.g., -20, -15)",
+        "All markdown tables in the output use valid syntax with pipe (|) column separators and a header separator row"
+      ]
+    }
+  ]
+}
