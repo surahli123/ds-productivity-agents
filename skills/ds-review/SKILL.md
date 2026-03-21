@@ -217,6 +217,8 @@ When 3 subagents dispatched (--domain active):
    Major Rework (max 59). Floor rules affect verdict only, not the numeric score.
    Floor rules apply across all dimensions equally. ADVISORY findings never trigger floors.
 7. Select top 3 priority fixes across both dimensions (rank by severity, then deduction size).
+   When two findings are comparable in severity and deduction, prefer the one with a more
+   specific, actionable location reference.
 8. Cap displayed findings at 10 total across both dimensions. Rank all findings by severity
    (CRITICAL first, then MAJOR by deduction size, then MINOR). If more than 10 findings exist,
    show only the top 10 in the per-dimension output sections. Add a note after the findings:
@@ -248,6 +250,14 @@ When 3 subagents dispatched (--domain active):
    With --domain, also add staleness warning banner between metadata and dashboard if any digest is >14 days old.
 6. `## Top 3 Priority Fixes` — each numbered with: emoji + title (severity), location, issue (2-3 sentences), suggested fix.
    Use severity emoji prefix: ❌ CRITICAL, 🔴 MAJOR, ⚠️ MINOR.
+   **Location precision rule:** Every finding MUST cite the most specific location where the reader
+   should look first — a section name, heading, or line reference. The Issue field (2-3 sentences)
+   may reference additional locations when a finding involves a contradiction between two sections.
+   Banned phrases in the Location field: "entire document", "throughout", "document-wide",
+   "all sections", "across the document." For missing content, state WHERE to add it (e.g.,
+   "Add before the Methodology section"). For unstructured documents without headings, use positional
+   references (e.g., "opening paragraph", "third paragraph", "final two paragraphs").
+   The Location field should read like a navigation instruction, not a scope description.
 7. `## What You Did Well` — 2-3 specific positives with explanation
 8. `## Analysis Dimension (Score: [X]/100)` — each lens with emoji-prefixed rating and top findings (capped per Step 9 volume limit) or "No issues found".
    Finding headers use emoji severity badge: `**Finding N: Title** (❌ CRITICAL, -X)`.

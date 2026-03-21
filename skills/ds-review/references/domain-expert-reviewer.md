@@ -106,7 +106,11 @@ FINDINGS:
    Lens: [lens name]
    Severity: [CRITICAL | MAJOR | MINOR | ADVISORY]
    Authority: [authoritative | advisory]
-   Location: [where in document]
+   Location: [cite the most specific section name, heading, or line reference where the reader
+             should look first. For missing content, state where to add it (e.g., "Add after
+             Results section"). Never use "entire document", "throughout", "document-wide",
+             or "all sections." For unstructured docs without headings, use positional references
+             (e.g., "opening paragraph", "third paragraph", "final two paragraphs").]
    Issue: [2-3 sentences]
    Suggested fix: [concrete, actionable]
 
