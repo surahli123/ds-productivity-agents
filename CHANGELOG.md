@@ -4,6 +4,21 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### Autoresearch: ds-review Location Precision (2026-03-21)
+
+**Status:** PR #7 open. Optimized via autoresearch loop (2 experiments, 7 fixtures, 5 binary evals).
+
+#### Added
+- **Location precision rule** in SKILL.md Step 10.6 — findings must cite specific sections, not "entire document"
+- **Step 9.7 tiebreaker** — prefer findings with more actionable location references when severity ties
+- **Subagent location constraint** — all 3 reviewer prompts (analysis, communication, domain) updated with precision rule in output template
+- **Unstructured document fallback** — positional references ("opening paragraph", "third paragraph") for docs without headings
+
+#### Autoresearch Results
+- Baseline: 30/35 (85.7%) → Exp 1: 34/35 (97.1%) → Exp 2: 35/35 (100%)
+- Code review identified placement blocker (rule only in orchestrator, not subagents) — fixed before merge
+- Autoresearch working directory at `skills/ds-review/autoresearch-ds-review/` (not committed)
+
 ### v0.6.0 — Plugin Skill Set Refactoring (2026-03-14)
 
 **Status:** COMPLETE. Migrated from custom agents/ + shared/skills/ to Claude Code plugin skill set.
