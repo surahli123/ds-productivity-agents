@@ -1,0 +1,1 @@
+{"eval_id": 0, "eval_name": "gas-prices-eda-trace", "prompt": "Analyze /Users/surahli/Downloads/iran_war_gas_prices_by_state.csv — load, inspect structure, analyze which states were most impacted, check regional patterns, identify outliers.", "assertions": []}

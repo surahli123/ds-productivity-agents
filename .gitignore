@@ -4,5 +4,11 @@ dev/
 # Eval workspace (generated output)
 ds-review-workspace/
 
+# Session traces (project-specific, not plugin code)
+traces/
+
+# Autoresearch working directories (generated during optimization)
+skills/*/autoresearch-*/
+
 # Git worktrees
 .worktrees/

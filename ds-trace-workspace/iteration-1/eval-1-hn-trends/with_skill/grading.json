@@ -1,0 +1,18 @@
+{
+  "eval_id": 1,
+  "eval_name": "hn-trends-eda-trace",
+  "expectations": [
+    {"text": "A trace file exists in traces/ with 'hacker-news' or 'hn-' or 'tech-trend' in the filename", "passed": true, "evidence": "File exists at with_skill/outputs/traces/trace.md, session_id: 2026-03-20-hacker-news-tech-trend-velocity-analysis"},
+    {"text": "The trace file starts with valid YAML frontmatter delimited by --- lines", "passed": true, "evidence": "Lines 1-14: valid YAML with --- delimiters"},
+    {"text": "YAML frontmatter status is 'complete' after finalization", "passed": true, "evidence": "status: complete on line 5"},
+    {"text": "YAML frontmatter tools_summary is populated (not empty {})", "passed": true, "evidence": "tools_summary: {Bash: 5, Read: 4, Write: 2}"},
+    {"text": "The trace contains at least 3 step entries with ✅ or ❌ prefix", "passed": true, "evidence": "6 step entries all with ✅ prefix"},
+    {"text": "At least one step includes a 🪙 Tokens field in its Execution block", "passed": true, "evidence": "All steps include 🪙 Tokens estimates (e.g., ~3,000, ~3,500)"},
+    {"text": "At least one step includes a 💰 Est. cost field in its Execution block", "passed": true, "evidence": "All steps include 💰 Est. cost (e.g., $0.05)"},
+    {"text": "At least one step includes a 📂 Files read field listing the CSV", "passed": true, "evidence": "Step 1 lists 📂 Files read: /Users/surahli/Downloads/Hacker_News_Tech_Trend_Velocity_Final.csv"},
+    {"text": "The trace contains findings about HN post engagement (mentions scores, velocity, viral)", "passed": true, "evidence": "Findings about Standard_Link 83.4%, Score_Velocity correlation r=0.77, Is_Viral = Score_Velocity >= 0.32"},
+    {"text": "A Session Summary exists with at least 3 of the 5 required fields", "passed": true, "evidence": "Session Summary has all 5 fields: Key decisions, Open questions, What went well, What went wrong, Suggested next steps"},
+    {"text": "Session Totals section shows steps counts matching the actual number of ✅ and ❌ entries in the trace", "passed": true, "evidence": "Session Totals shows 6 ✅, 0 ❌ matching the 6 step entries in the trace"},
+    {"text": "The trace is organized with at least one Phase header", "passed": true, "evidence": "Two phase headers: Phase: Data Loading, Phase: Exploratory Analysis"}
+  ]
+}

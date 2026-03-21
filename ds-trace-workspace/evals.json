@@ -1,0 +1,75 @@
+{
+  "skill_name": "ds-trace",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "gas-prices-eda-trace",
+      "prompt": "Run /ds-trace start \"Iran war gas price impact analysis\". Then do an EDA on /Users/surahli/Downloads/iran_war_gas_prices_by_state.csv — load the data, check structure, analyze which states were most impacted by the gas price increase, check regional patterns, and identify any outliers. Write all trace entries to the trace file as you work. When done with the EDA, finalize the trace (write Session Summary, update YAML frontmatter and Session Totals).",
+      "expected_output": "A properly formatted trace file with YAML frontmatter, multiple trace entries capturing EDA steps, and a finalized Session Summary + Session Totals section.",
+      "files": ["/Users/surahli/Downloads/iran_war_gas_prices_by_state.csv"],
+      "assertions": [
+        "A trace file exists in traces/ with 'iran-war' or 'gas-price' in the filename",
+        "The trace file starts with valid YAML frontmatter delimited by --- lines",
+        "YAML frontmatter contains session_id, date, objective, and status fields",
+        "YAML frontmatter status is 'complete' (not 'in-progress') after finalization",
+        "YAML frontmatter contains numeric totals: total_duration_min > 0, total_tokens > 0, steps_success > 0",
+        "The trace contains at least 3 step entries (### ✅ Step: or ### ❌ Error:)",
+        "Each step entry has at minimum: Action, Decision, and Result fields",
+        "At least 2 step entries include an Execution block with Tools and Duration fields",
+        "The trace contains at least one Phase header (## Phase:)",
+        "A Session Summary section exists with Key decisions, Open questions, What went well, and What went wrong",
+        "A Session Totals section (## 📊 Session Totals) exists with Duration, Total tokens, Steps counts",
+        "The trace captures actual analysis findings (mentions states, regions, or price data)",
+        "Emoji status indicators are used (✅ for success, ❌ for errors if any)"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "hn-trends-eda-trace",
+      "prompt": "Run /ds-trace start \"Hacker News tech trend velocity analysis\". Then do an EDA on /Users/surahli/Downloads/Hacker_News_Tech_Trend_Velocity_Final.csv — load the data, inspect structure, analyze which post types get the most engagement, examine the relationship between score velocity and comment velocity, identify viral content patterns. Write all trace entries to the trace file as you work. When done, finalize the trace (Session Summary, YAML frontmatter, Session Totals).",
+      "expected_output": "A properly formatted trace file with YAML frontmatter, multiple trace entries, Execution blocks with tool/token/cost tracking, and finalized Session Summary.",
+      "files": ["/Users/surahli/Downloads/Hacker_News_Tech_Trend_Velocity_Final.csv"],
+      "assertions": [
+        "A trace file exists in traces/ with 'hacker-news' or 'hn-' or 'tech-trend' in the filename",
+        "The trace file starts with valid YAML frontmatter delimited by --- lines",
+        "YAML frontmatter status is 'complete' after finalization",
+        "YAML frontmatter tools_summary is populated (not empty {})",
+        "The trace contains at least 3 step entries with ✅ or ❌ prefix",
+        "At least one step includes a 🪙 Tokens field in its Execution block",
+        "At least one step includes a 💰 Est. cost field in its Execution block",
+        "At least one step includes a 📂 Files read field listing the CSV",
+        "The trace contains findings about HN post engagement (mentions scores, velocity, viral)",
+        "A Session Summary exists with at least 3 of the 5 required fields (Key decisions, Open questions, What went well, What went wrong, Suggested next steps)",
+        "Session Totals section shows steps counts matching the actual number of ✅ and ❌ entries in the trace",
+        "The trace is organized with at least one Phase header"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "security-logs-eda-trace",
+      "prompt": "Run /ds-trace start \"Security incident log analysis\". Then analyze the security logs dataset at /Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/ — there are 7 CSV files (security_incidents.csv, login_logs.csv, network_events.csv, users.csv, systems.csv, organizations.csv, incident_systems.csv). Load these into a SQLite database, then write SQL queries to: (1) find the most common incident types and their severity distribution, (2) identify users with the most failed logins, (3) join incidents with systems to find the most vulnerable systems, (4) analyze network events for anomalous patterns. Write all trace entries as you work, capturing SQL queries in the trace. When done, finalize the trace.",
+      "expected_output": "A properly formatted trace file covering SQL-based analysis of multi-file security logs, with decisions about schema design, SQL queries captured in trace entries, and cross-table join analysis.",
+      "files": [
+        "/Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/security_incidents.csv",
+        "/Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/login_logs.csv",
+        "/Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/network_events.csv",
+        "/Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/users.csv",
+        "/Users/surahli/ds-productivity-agents/ds-trace-workspace/test-data/security-logs/systems.csv"
+      ],
+      "assertions": [
+        "A trace file exists in traces/ with 'security' in the filename",
+        "The trace file has valid YAML frontmatter with status 'complete'",
+        "YAML frontmatter files_read is >= 3 (multiple CSVs were analyzed)",
+        "The trace contains at least 4 step entries (multi-file analysis should have more steps)",
+        "At least one step captures a Decision about schema design or how to join tables",
+        "At least one step includes SQL query text in the Action or Commands field",
+        "The trace mentions at least 3 of the 7 CSV filenames",
+        "The trace contains findings about security incidents, failed logins, or vulnerable systems",
+        "If any errors occurred (e.g., SQL syntax, schema mismatch), they are traced with ❌ Error format including Debug steps",
+        "Session Summary exists and mentions cross-table analysis or SQL-based findings",
+        "Session Totals shows files_read count matching the YAML frontmatter",
+        "The trace has at least 2 Phase headers (Data Loading + Exploratory Analysis minimum)"
+      ]
+    }
+  ]
+}
