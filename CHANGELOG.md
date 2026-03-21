@@ -4,6 +4,13 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### Eval-Grounded AutoResearch Plan (2026-03-21)
+
+#### Added
+- **Three Gulfs article** saved to `docs/research/three-gulfs-autoresearch-evals.md` — methodology for combining Hamel Husain's eval framework with AutoResearch optimization
+- **Eval-grounded autoresearch plan** at `docs/plans/eval-grounded-autoresearch.md` — 7-phase plan integrating error analysis, automated LLM judges, and judge validation into autoresearch workflow
+- **Hamel's evals-skills plugin installed** — 7 skills (error-analysis, generate-synthetic-data, write-judge-prompt, validate-evaluator, eval-audit, evaluate-rag, build-review-interface) at `~/.claude/plugins/marketplaces/hamelsmu-evals-skills/`
+
 ### Autoresearch: ds-review Location Precision (2026-03-21)
 
 **Status:** PR #7 open. Optimized via autoresearch loop (2 experiments, 7 fixtures, 5 binary evals).
