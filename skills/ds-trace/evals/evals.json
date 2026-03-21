@@ -1,0 +1,59 @@
+{
+  "skill_name": "ds-trace",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/ds-trace start \"churn analysis for Q1 enterprise segment\"",
+      "expected_output": "Start mode creates a trace file in traces/ directory with correct YAML frontmatter, phase scaffolding, and Session Totals section. Confirms tracing is active to the user.",
+      "files": [],
+      "expectations": [
+        "A trace file is created at traces/trace-YYYY-MM-DD-churn-analysis-for-q1-enterprise-segment.md (or similar kebab-case slug)",
+        "The trace file starts with YAML frontmatter delimited by --- lines",
+        "YAML frontmatter contains 'session_id' field with today's date and topic slug",
+        "YAML frontmatter contains 'date' field with today's date in YYYY-MM-DD format",
+        "YAML frontmatter contains 'objective' field with the topic text",
+        "YAML frontmatter contains 'status: in-progress'",
+        "YAML frontmatter contains numeric fields: total_duration_min, total_tokens, total_cost_usd, steps_success, steps_error, files_read, files_written",
+        "YAML frontmatter contains 'tools_summary' field",
+        "The trace file contains a top-level heading '# Trace:' with the topic name",
+        "The trace file contains at least 3 phase headers (## Phase:)",
+        "The trace file contains a '## 📊 Session Totals' section",
+        "The confirmation message to the user mentions the trace file path",
+        "The confirmation message mentions what will be captured (decisions, tools, timing)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/ds-trace reflect traces/trace-2026-03-20-churn-analysis.md",
+      "expected_output": "Reflect mode reads the trace, extracts learnings grouped by target (CLAUDE.md, learnings.md, memory), presents them for approval with session health metrics, and waits for DS confirmation before writing.",
+      "files": [],
+      "expectations": [
+        "The reflect output includes a 'Reflection Summary' or equivalent heading",
+        "Learnings are grouped by target: CLAUDE.md, traces/learnings.md, and Memory",
+        "Each proposed learning includes the target destination (where it will be written)",
+        "Each proposed learning includes the proposed text that will be written",
+        "Each proposed learning references which trace entry it came from (source)",
+        "A session health summary is included with at least: duration, error ratio",
+        "The output asks for DS approval before writing any learnings (gate)",
+        "CLAUDE.md learnings are formatted as actionable rules with dates",
+        "Learnings file patterns include a Phase field and a Why field",
+        "Memory entries include project-specific details (dataset/table/column names)",
+        "The reflect step suggests next actions (e.g., run /ds-review)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/ds-trace reflect",
+      "expected_output": "When no trace file exists, the reflect mode gracefully offers a retrospective trace option instead of failing. If the user declines, it suggests using /ds-trace start next time.",
+      "files": [],
+      "expectations": [
+        "Output acknowledges that no trace file was found",
+        "Output offers to create a retrospective trace from session memory",
+        "If retrospective is accepted: a trace file is created with a disclaimer about estimated data",
+        "The disclaimer mentions that timing and token counts are estimated",
+        "If retrospective is declined: output suggests using /ds-trace start next time",
+        "The fallback does NOT produce an error or crash — it handles gracefully"
+      ]
+    }
+  ]
+}

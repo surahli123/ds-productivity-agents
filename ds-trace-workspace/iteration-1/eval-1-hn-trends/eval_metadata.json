@@ -1,0 +1,1 @@
+{"eval_id": 1, "eval_name": "hn-trends-eda-trace", "prompt": "Analyze /Users/surahli/Downloads/Hacker_News_Tech_Trend_Velocity_Final.csv — load, inspect, analyze post type engagement, score vs comment velocity correlation, viral content patterns.", "assertions": []}

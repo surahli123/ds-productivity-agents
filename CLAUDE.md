@@ -3,6 +3,7 @@
 ## What This Is
 A Claude Code plugin (skill set) for DS productivity in Search Relevance:
 - **DS Analysis Review** (`ds-productivity:ds-review`): Reviews DS analyses across methodology, logic, communication, and domain expertise
+- **DS Trace** (`ds-productivity:ds-trace`): Traces coding agent work during data analysis — captures decisions, reasoning, tool usage, and engineering metrics for compound learning
 - **Search Domain Knowledge** (`ds-productivity:search-domain-knowledge`): Curated domain expertise for Search Relevance
 - **SQL Review:** (Q2 2026) Reviews SQL queries for syntax and domain-specific patterns
 - **Search Metric Analysis:** (Q2 2026) Analyzes search metrics and generates insights
@@ -16,6 +17,12 @@ All skills share domain knowledge infrastructure for consistent Search Relevance
 - skills/ds-review/references/analysis-reviewer.md — subagent for analysis dimension
 - skills/ds-review/references/communication-reviewer.md — subagent for communication dimension
 - skills/ds-review/references/domain-expert-reviewer.md — subagent for domain dimension (v0.5+)
+
+### DS Trace
+- skills/ds-trace/SKILL.md — orchestrator (invoked via /ds-trace command or ds-productivity:ds-trace skill)
+- skills/ds-trace/assets/trace-template.md — structured trace scaffold (Generator pattern)
+- skills/ds-trace/references/tracing-guide.md — what/how to trace during analysis
+- skills/ds-trace/references/reflect-checklist.md — learning extraction rubric (Reviewer pattern)
 
 ### Shared References
 - skills/ds-review/references/framework.md — shared rubrics, deductions, credits, personas

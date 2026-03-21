@@ -1,0 +1,1 @@
+{"eval_id": 2, "eval_name": "security-logs-eda-trace", "prompt": "Load 7 CSVs from ds-trace-workspace/test-data/security-logs/ into SQLite, then write SQL to analyze incident types, failed logins, vulnerable systems, and network anomalies.", "assertions": []}

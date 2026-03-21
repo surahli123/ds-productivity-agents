@@ -1,0 +1,94 @@
+{
+  "skill_name": "ds-trace",
+  "iteration": 1,
+  "timestamp": "2026-03-20",
+  "configurations": [
+    {
+      "name": "with_skill",
+      "label": "With ds-trace skill",
+      "results": [
+        {
+          "eval_name": "gas-prices-eda-trace",
+          "passed": 13,
+          "total": 13,
+          "pass_rate": 100.0,
+          "tokens": 35130,
+          "duration_seconds": 128.3
+        },
+        {
+          "eval_name": "hn-trends-eda-trace",
+          "passed": 12,
+          "total": 12,
+          "pass_rate": 100.0,
+          "tokens": 36911,
+          "duration_seconds": 178.7
+        },
+        {
+          "eval_name": "security-logs-eda-trace",
+          "passed": 12,
+          "total": 12,
+          "pass_rate": 100.0,
+          "tokens": 55221,
+          "duration_seconds": 177.2
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 100.0,
+        "stddev_pass_rate": 0.0,
+        "mean_tokens": 42420.7,
+        "mean_duration_seconds": 161.4,
+        "total_assertions_passed": 37,
+        "total_assertions": 37
+      }
+    },
+    {
+      "name": "without_skill",
+      "label": "Baseline (no skill)",
+      "results": [
+        {
+          "eval_name": "gas-prices-eda-trace",
+          "passed": null,
+          "total": null,
+          "pass_rate": null,
+          "tokens": 37071,
+          "duration_seconds": 171.5
+        },
+        {
+          "eval_name": "hn-trends-eda-trace",
+          "passed": null,
+          "total": null,
+          "pass_rate": null,
+          "tokens": 32785,
+          "duration_seconds": 200.6
+        },
+        {
+          "eval_name": "security-logs-eda-trace",
+          "passed": null,
+          "total": null,
+          "pass_rate": null,
+          "tokens": 34869,
+          "duration_seconds": 184.6
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": null,
+        "stddev_pass_rate": null,
+        "mean_tokens": 34908.3,
+        "mean_duration_seconds": 185.6,
+        "total_assertions_passed": null,
+        "total_assertions": null
+      }
+    }
+  ],
+  "analysis": {
+    "pass_rate": "100% (37/37) — all structural assertions pass across all 3 test cases",
+    "token_overhead": "With skill uses 21.5% more tokens on average (42.4K vs 34.9K) due to trace-writing overhead",
+    "speed": "With skill is 13% faster on average (161s vs 186s) — structured format may reduce decision-making time",
+    "quality_notes": [
+      "All 3 with-skill traces have valid YAML frontmatter, emoji-annotated steps, Execution blocks, and Session Totals",
+      "Baseline outputs are freeform markdown — readable but not machine-parseable, no token/cost tracking, no YAML metadata",
+      "Security logs eval (eval 2) shows largest token overhead (55K vs 35K, +58%) due to 7-file schema tracing",
+      "The Is_Viral data leakage finding appeared in BOTH with-skill and baseline HN evals — analysis quality is not degraded by tracing"
+    ]
+  }
+}

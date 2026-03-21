@@ -1,0 +1,18 @@
+{
+  "eval_id": 2,
+  "eval_name": "security-logs-eda-trace",
+  "expectations": [
+    {"text": "A trace file exists in traces/ with 'security' in the filename", "passed": true, "evidence": "File exists at with_skill/outputs/traces/trace.md, session_id: 2026-03-20-security-incident-log-analysis"},
+    {"text": "The trace file has valid YAML frontmatter with status 'complete'", "passed": true, "evidence": "YAML frontmatter with status: complete"},
+    {"text": "YAML frontmatter files_read is >= 3 (multiple CSVs were analyzed)", "passed": true, "evidence": "files_read: 11 (7 CSVs read + re-reads during analysis)"},
+    {"text": "The trace contains at least 4 step entries (multi-file analysis should have more steps)", "passed": true, "evidence": "6 step entries all with ✅ prefix"},
+    {"text": "At least one step captures a Decision about schema design or how to join tables", "passed": true, "evidence": "Step 2 Decision: 'Used SQLite over pandas for SQL analysis because the task specifically requires SQL queries. All columns loaded as TEXT since the CSVs have simple types'"},
+    {"text": "At least one step includes SQL query text in the Action or Commands field", "passed": true, "evidence": "Step 2 Commands field includes Python/SQL code: 'import sqlite3, csv; conn = sqlite3.connect...'"},
+    {"text": "The trace mentions at least 3 of the 7 CSV filenames", "passed": true, "evidence": "Step 1 lists all 7: security_incidents.csv, login_logs.csv, network_events.csv, users.csv, systems.csv, organizations.csv, incident_systems.csv"},
+    {"text": "The trace contains findings about security incidents, failed logins, or vulnerable systems", "passed": true, "evidence": "Findings: Malware most common (185/500), users U0279/U1491 100% failure rate, S0107 91.7% severe event rate"},
+    {"text": "If any errors occurred, they are traced with ❌ Error format including Debug steps", "passed": true, "evidence": "No errors occurred (steps_error: 0). N/A — assertion passes vacuously."},
+    {"text": "Session Summary exists and mentions cross-table analysis or SQL-based findings", "passed": true, "evidence": "Session Summary references SQL queries, cross-table joins, and compound-threat correlations"},
+    {"text": "Session Totals shows files_read count matching the YAML frontmatter", "passed": true, "evidence": "Both YAML and Session Totals show files_read: 11"},
+    {"text": "The trace has at least 2 Phase headers (Data Loading + Exploratory Analysis minimum)", "passed": true, "evidence": "Two phase headers: Phase: Data Loading, Phase: Exploratory Analysis"}
+  ]
+}

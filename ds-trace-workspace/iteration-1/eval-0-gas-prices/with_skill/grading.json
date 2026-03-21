@@ -1,0 +1,19 @@
+{
+  "eval_id": 0,
+  "eval_name": "gas-prices-eda-trace",
+  "expectations": [
+    {"text": "A trace file exists in traces/ with 'iran-war' or 'gas-price' in the filename", "passed": true, "evidence": "File exists at with_skill/outputs/traces/trace.md, session_id contains 'iran-war-gas-price'"},
+    {"text": "The trace file starts with valid YAML frontmatter delimited by --- lines", "passed": true, "evidence": "Lines 1-14: YAML frontmatter with --- delimiters, all fields present"},
+    {"text": "YAML frontmatter contains session_id, date, objective, and status fields", "passed": true, "evidence": "session_id: 2026-03-20-iran-war-gas-price-impact-analysis, date: 2026-03-20, objective: Iran war gas price impact analysis, status: complete"},
+    {"text": "YAML frontmatter status is 'complete' (not 'in-progress') after finalization", "passed": true, "evidence": "status: complete on line 5"},
+    {"text": "YAML frontmatter contains numeric totals: total_duration_min > 0, total_tokens > 0, steps_success > 0", "passed": true, "evidence": "total_duration_min: 12, total_tokens: 18000, steps_success: 5"},
+    {"text": "The trace contains at least 3 step entries (### ✅ Step: or ### ❌ Error:)", "passed": true, "evidence": "5 step entries: Load and inspect, Identify most impacted, Regional patterns, Statistical outliers, Pre-war vs war dynamics"},
+    {"text": "Each step entry has at minimum: Action, Decision, and Result fields", "passed": true, "evidence": "All 5 steps have Action, Decision, and Result fields"},
+    {"text": "At least 2 step entries include an Execution block with Tools and Duration fields", "passed": true, "evidence": "All 5 steps have Execution blocks with Tools and Duration"},
+    {"text": "The trace contains at least one Phase header (## Phase:)", "passed": true, "evidence": "Two phase headers: Phase: Data Loading, Phase: Exploratory Analysis"},
+    {"text": "A Session Summary section exists with Key decisions, Open questions, What went well, and What went wrong", "passed": true, "evidence": "Session Summary on line 109 has all 5 fields including Suggested next steps"},
+    {"text": "A Session Totals section (## 📊 Session Totals) exists with Duration, Total tokens, Steps counts", "passed": true, "evidence": "Session Totals on line 131 with all required fields"},
+    {"text": "The trace captures actual analysis findings (mentions states, regions, or price data)", "passed": true, "evidence": "Mentions Hawaii ($1.05), California ($1.01), Kentucky (31.0%), regional rankings, -0.777 correlation"},
+    {"text": "Emoji status indicators are used (✅ for success, ❌ for errors if any)", "passed": true, "evidence": "All 5 steps use ✅ prefix, 2 insights use 💡 prefix"}
+  ]
+}

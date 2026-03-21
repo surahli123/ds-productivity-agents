@@ -4,6 +4,27 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### v0.7.0 — DS Trace Skill (2026-03-20)
+
+**Status:** IN PROGRESS. Agent observability skill for data analysis sessions.
+
+#### New Skill: ds-trace
+- **Two-command workflow** — `/ds-trace start "topic"` begins tracing, `/ds-trace reflect` extracts learnings
+- **Composed ADK pattern** — Pipeline (orchestration) + Generator (trace output) + Reviewer (reflection)
+- **Structured trace format** — YAML frontmatter + emoji-annotated steps + engineering execution blocks
+- **Two-layer observability** — DS narrative (Action/Decision/Result) + engineering metrics (tools/files/tokens/cost/timing)
+- **3 learning targets** — CLAUDE.md universal lessons, traces/learnings.md DS patterns, memory project-specific facts
+- **No-start fallback** — retrospective trace from conversation context if `/ds-trace start` was not run
+- **Error tracing** — full debugging journey capture (trigger, root cause, debug steps, fix, lesson)
+- **Eval infrastructure** — 3 test cases with 30 structural assertions
+
+#### Design Inspiration
+- Arize Phoenix: span kinds, token/cost accounting, session totals
+- Google ADK 5 Patterns: Generator + Reviewer + Pipeline composition
+- Anthropic Skill-Creator: progressive disclosure, assets/ vs references/ convention
+
+---
+
 ### v0.6.0 — Plugin Skill Set Refactoring (2026-03-14)
 
 **Status:** COMPLETE. Migrated from custom agents/ + shared/skills/ to Claude Code plugin skill set.
@@ -23,6 +44,12 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 - CLAUDE.md, README.md updated for skill architecture
 - `.claude/rules/plugin-conventions.md` rewritten for skill-based development
 - IC9 Search SME findings captured in backlog (domain knowledge gaps, missing feedback loop)
+
+#### Validation (2026-03-14)
+- **Vanguard baseline test** — Score 59 vs R4 baseline 57 (+2 drift, within ±5 tolerance). PASS.
+- **Structural contract eval** — 39/39 assertions across 3 test cases (Vanguard, Rossmann, Eppo with domain)
+- **Code paths validated** — 2-dim scoring, 3-dim scoring, DR formula, credit cap, conditional credits, floor rule (confirming/non-overriding/overriding), Stage 2 cross-dimension dedup, domain digest loading, staleness warning
+- **Eval infrastructure** — `skills/ds-review/evals/evals.json` (3 test cases, 17/11/11 assertions), workspace at `ds-review-workspace/iteration-1/`, benchmark + HTML viewer
 
 #### Review Process
 - 4 independent reviews: DS Lead, PM Lead, Principal AI Engineer, IC9 Search SME
