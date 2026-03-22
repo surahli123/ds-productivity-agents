@@ -78,6 +78,8 @@ session. Follow it for every meaningful step you take.
 - Write a Session Summary before finishing
 - Update YAML frontmatter and Session Totals at session end
 - **Use the right tool for each job** — don't default to Bash for everything. Use Grep to search data files for patterns before loading into Python. Use Glob to discover files in directories. Use Read to preview files before processing. Use WebSearch when domain context would help interpret findings. The trace should show diverse, purposeful tool usage — each tool chosen because it was the best fit, not because it was the default.
+- **Short session minimum (≤5 steps).** Even quick tasks produce learnings. If the session is short, ensure the trace still has: (1) at least one Decision with a "chose X over Y because Z" tradeoff, (2) at least one 🧪 Artifact showing actual code/query used, and (3) a non-empty "What went wrong" in the Session Summary. A 3-step trace that hits these three marks is more useful than a 10-step trace that's all boilerplate.
+- **Routine task enrichment.** For mechanical/templated tasks (metric pulls, scheduled reports, data exports), the trace is still valuable — but the value is different. Add: (1) a **verification step** comparing output against the source dashboard or last run ("DAU 142K matches Looker within 0.5%"), (2) a note on what could be **automated vs. what required judgment** — this is the learning a routine trace should produce. Even a fully automated pull has implicit decisions worth surfacing (which date range? which metric definitions? what if the source was stale?).
 
 ### Step 5 — Confirm to the DS
 
@@ -178,6 +180,7 @@ When `/ds-trace reflect` is invoked but no trace file exists:
      > ⚠️ **Retrospective trace** — reconstructed from session memory.
      > Timing, token counts, and tool usage are estimated. Some steps may be missing.
      ```
+   - **Retrospective quality minimum:** Even without real-time data, reconstruct at least: (1) one Decision with reasoning ("chose X over Y because Z" — you remember WHY you made key choices even without the trace), (2) one 🧪 Artifact from memory (the key query, formula, or command you ran), (3) a substantive "What went wrong" (retrospectives are BETTER at this than real-time traces because hindsight is clearer). A retrospective that says "(not recorded)" for everything is worse than no retrospective — it signals the agent tried but failed.
    - Write the retrospective trace to `traces/trace-{{YYYY-MM-DD}}-retrospective.md`
    - Then continue with the normal reflect flow (Step 2 onwards)
 4. If no:
@@ -194,13 +197,14 @@ Use these formats when tracing during an active session:
 ```markdown
 ### ✅ Step: [description]
 - **Action:** [what you did]
-- **Decision:** [what you chose and why]
+- **Decision:** [what you chose AND why — always name the alternative you rejected and the tradeoff. "Used X" is not a decision. "Chose X over Y because Z" is. If there was no real choice, say "Standard approach — no meaningful alternatives."]
 - **Result:** [what happened — quantify when possible]
 - **Execution:**
   - 🔧 Tools: [tools used]
   - 📂 Files read: [files opened]
   - 📝 Files written: [files created/modified]
   - 💻 Commands: [key commands]
+  - 🧪 Artifact: [the actual code, query, formula, or regex pattern used — not the tool name, the actual analytical work product. e.g., `df.groupby('segment')['revenue'].mean()` or `grep -E 'Failed password' auth.log | wc -l`. This is the lab notebook entry a DS would learn from.]
   - ⏱️ Duration: [time spent]
   - 🪙 Tokens: [approximate tokens]
   - 💰 Est. cost: [estimated USD]
@@ -245,6 +249,8 @@ these final trace entries:
 
 1. **Write the Session Summary** (key decisions, open questions, what went well/wrong)
    - **"What went wrong" must never be empty or say "nothing."** Even clean sessions have inefficiencies. If no errors occurred, reflect on: was any step slower than it should have been? Did you make a suboptimal tool choice? Could the analysis order have been better? Was there a moment of uncertainty? Write at least one specific, concrete observation. A good trace finds something to improve even when nothing broke.
-2. **Update YAML frontmatter** (status, totals)
-3. **Update Session Totals** section (aggregated metrics)
-4. **Remove unused phase headers** (clean up the trace)
+2. **Verify at least one key result.** Before writing the Session Summary, sanity-check your most important finding against a second source: compare against a dashboard, re-derive from raw data, cross-reference with a known baseline, or spot-check a sample. Log the verification as a step. A trace without any verification is a trace the DS can't trust.
+3. **Update YAML frontmatter** (status, totals)
+4. **Update Session Totals** section (aggregated metrics). For the "Most expensive step" field, don't just name it — explain WHY it was expensive (e.g., "loading 2.3GB without chunking", "complex join across 3 tables", "iterating on visualization formatting"). A named bottleneck without a cause is an observation, not a learning.
+5. **Tool diversity self-check.** Before finalizing, scan your trace's tools_summary. If you used fewer than 4 distinct tool types, you likely defaulted to Bash for tasks better served by Grep (pattern search), Glob (file discovery), Read (preview), or WebSearch (domain context). Add a note in "What went wrong" if tool diversity is low.
+6. **Remove unused phase headers** (clean up the trace)
