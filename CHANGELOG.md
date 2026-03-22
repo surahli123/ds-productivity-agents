@@ -4,6 +4,21 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### Phase 1-2 Error Analysis: Eval-Grounded AutoResearch (2026-03-22)
+
+**Status:** Phase 1 complete, Phase 2 in progress (12/22 traces annotated).
+
+#### Added
+- **Eval-audit report** at `skills/ds-review/autoresearch-ds-review/eval-audit-report.md` — 7 findings across 6 diagnostic areas, prioritized remediation plan
+- **Error analysis trace log** at `skills/ds-review/autoresearch-ds-review/error-analysis-traces.md` — 12 traces (Batch 1: 5, Batch 2: 7) with user annotations and failure observations
+- 12 ds-review inline trace outputs collected on diverse fixtures (3 Meta blogs, 2 Kaggle notebooks, 1 capstone, 1 Atlassian blog, 2 synthetics, 1 Vanguard A/B test, 1 Eppo guide, 1 unstructured prose)
+
+#### Discovered
+- **Failure mode 1: Missing narrative synthesis not caught** (T-05) — review flags individual structural issues but misses when they compound into fundamental lack of narrative
+- **Failure mode 2: Wrong rubric for document type** (T-06) — review applies empirical analysis standards to system descriptions/blog posts
+- **Failure mode 3: Score inflation** (soft pattern across T-01/T-02/T-03/T-04) — scores tend to run slightly high
+- **Meta-pattern: Document-type awareness gap** — FM1 + FM2 are two sides of the same coin: the review doesn't understand what kind of document it's evaluating
+
 ### Eval-Grounded AutoResearch Plan (2026-03-21)
 
 #### Added
