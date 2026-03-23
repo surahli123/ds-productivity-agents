@@ -4,6 +4,26 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### AutoRefine v2 Full Pipeline Dogfood (2026-03-22)
+
+**Status:** Complete. Full pipeline (Phases 1-7) validated end-to-end. 5 mutations produced.
+
+#### Added
+- **Full autorefine workspace** at `skills/ds-review/autoresearch-ds-review/` — fresh v2 workspace with state.json (schema v2), session-log.json, all phase artifacts
+- **15 ds-review traces** (T01-T15) — 10 real + 5 synthetic fixtures, parallel subagent generation
+- **Failure taxonomy** — 4 categories emerged from 12 human-reviewed traces: document type blindness, credit inflation, catastrophic dimension masking, severity under-call on contradictions
+- **5 binary evals** — E1 (doc type calibration), E2 (credit balance), E3 (structural severity), E4 (catastrophic dim), E5 (contradiction severity)
+- **5 judges** — 3 code-based (bash), 2 agent-as-judge prompts, all in `judges/` directory
+- **5 SKILL.md mutations** in `ds-review-optimized.md` — credit ceiling, dimension gap warning, structural CRITICAL, contradiction escalation, document type classification
+- **Full session record** at `docs/session-record-2026-03-22-autorefine-v2-dogfood.md`
+
+#### Results
+- Baseline: 77.4% → Final: 100% (code judges), 5/5 experiments kept
+- v2 mechanisms validated: smart sampling, clustering, consistency detection, session-log.json
+- User feedback: "eval is way too long for some skills" — tiered depth needed
+
+---
+
 ### Phase 1-2 Error Analysis: Eval-Grounded AutoResearch (2026-03-22)
 
 **Status:** Phase 1 complete, Phase 2 in progress (12/22 traces annotated).
