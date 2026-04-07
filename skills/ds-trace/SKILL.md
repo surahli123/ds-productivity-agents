@@ -59,10 +59,18 @@ Check if a `traces/` directory exists in the current project. If not, create it.
 1. Read the trace template: `assets/trace-template.md`
 2. Fill in the placeholders:
    - `{{YYYY-MM-DD}}` → today's date
-   - `{{topic-slug}}` → topic converted to kebab-case (e.g., "churn-analysis")
+   - `{{topic-slug}}` → topic converted to a safe slug:
+     1. Lowercase the topic
+     2. Replace spaces and underscores with hyphens
+     3. Strip all characters except `a-z`, `0-9`, and `-`
+     4. Collapse consecutive hyphens into one
+     5. Truncate to 50 characters (preserve word boundaries when possible)
+     6. Example: "Q1 Revenue Deep-Dive" → `q1-revenue-deep-dive`
    - `{{Topic}}` → original topic text
    - `{{objective}}` → topic text (the DS can refine this later)
-3. Write to: `traces/trace-{{YYYY-MM-DD}}-{{topic-slug}}.md`
+3. Check if `traces/trace-{{YYYY-MM-DD}}-{{topic-slug}}.md` already exists.
+   If yes, append a counter: `-2`, `-3`, etc. (e.g., `trace-2026-04-06-churn-analysis-2.md`).
+4. Write to the final path.
 
 ### Step 4 — Load the tracing guide
 
@@ -89,10 +97,13 @@ Tell the DS that tracing is active:
 Tracing active. I'll log my decisions, reasoning, and tool usage to:
   traces/trace-{{YYYY-MM-DD}}-{{topic-slug}}.md
 
-For every meaningful step, I'll capture:
-  ✅ What I did, why, and what happened
-  🔧 Which tools and files I used
-  ⏱️ How long it took and what it cost
+What's different now:
+  - I'll explain my reasoning at each decision point, not just show results
+  - I'll capture tool usage, timing, and cost for every step
+  - I'll log errors in detail so we can learn from them
+
+When you're done, run `/ds-trace reflect` to extract compound learnings
+from this session into CLAUDE.md, learnings.md, and project memory.
 
 Ready to work — what's the analysis task?
 ```
@@ -152,7 +163,9 @@ edit some, remove some, or reject all.
 ### Step 6 — Write approved learnings
 
 Write each approved learning to its target:
-1. CLAUDE.md → append to `# Mistakes & Learnings` section
+1. CLAUDE.md → append to `# Mistakes & Learnings` section. If this section does not
+   exist, create it at the end of the file with the header `# Mistakes & Learnings`
+   before appending. If CLAUDE.md itself does not exist, warn the DS and skip this target.
 2. traces/learnings.md → append new pattern (create file with header if it doesn't exist)
 3. Memory → write a new memory file following the user's memory system
 
