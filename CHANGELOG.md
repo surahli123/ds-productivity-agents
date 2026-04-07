@@ -4,9 +4,25 @@ All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent
 
 ## [Unreleased]
 
+### v0.7.1 — DS Trace AutoRefine Improvements (2026-04-06)
+
+**Status:** PR #9 open.
+
+#### Changed
+- Added safe slug conversion to trace file creation (sanitize path traversal chars, strip special chars, truncate to 50 chars)
+- Added collision detection: appends counter (`-2`, `-3`) when trace file already exists on same day
+- Added CLAUDE.md section guard in reflect mode: creates `# Mistakes & Learnings` section if missing
+- Enriched start mode confirmation with behavioral orientation and `/ds-trace reflect` pointer
+
+#### Meta
+- First AutoRefine dogfood (Quick Start, 2 mutations, 5/5 evals passing)
+- Merged ds-trace feature branch to main (PR #8), removed legacy `skills/autoresearch/`
+
+---
+
 ### v0.7.0 — DS Trace Skill (2026-03-20)
 
-**Status:** IN PROGRESS. Agent observability skill for data analysis sessions.
+**Status:** COMPLETE. Agent observability skill for data analysis sessions.
 
 #### New Skill: ds-trace
 - **Two-command workflow** — `/ds-trace start "topic"` begins tracing, `/ds-trace reflect` extracts learnings
