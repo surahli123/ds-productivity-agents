@@ -1,5 +1,7 @@
 # DS Productivity Agents
 
+> **Retired (2026-10).** Don't develop here. Active work lives in ds-stack (`surahli123/ds-stack`); see README.md for what moved where.
+
 ## What This Is
 A Claude Code plugin (skill set) for DS productivity in Search Relevance:
 - **DS Analysis Review** (`ds-productivity:ds-review`): Reviews DS analyses across methodology, logic, communication, and domain expertise

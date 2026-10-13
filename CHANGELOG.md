@@ -2,6 +2,10 @@
 
 All notable changes to DS Productivity Agents (formerly DS Analysis Review Agent).
 
+## Retired - 2026-10-13
+
+Folded into ds-stack v0.3 and retired. The README lists what moved where; nothing new ships here.
+
 ## [Unreleased]
 
 ### v0.7.0 — DS Trace Skill (2026-03-20)
