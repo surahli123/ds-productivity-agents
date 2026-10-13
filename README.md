@@ -1,5 +1,12 @@
 # DS Productivity Agents
 
+> **Retired (2026-10).** This repo is no longer developed. What was worth keeping moved to ds-stack v0.3 (`surahli123/ds-stack`, private):
+> - ds-review's analysis-reviewer questions, without scores, now `skills/ds-mode/references/review-checklist.md`;
+> - ds-trace's purpose, recording what the agent did, now written by script: every query is logged with an id, and every number in a readout carries a tag that `tools/verify_readout.py` resolves;
+> - ds-trace's "verify one key result against a second source", now the readout's `Reconciled:` line.
+>
+> Not carried over: the scoring framework (uncalibrated), the communication and domain reviewers, the trace template and reflect step, and the search-domain digests (stale, with invented entries). The rest of this repo stays as a record.
+
 A Claude Code plugin skill set for data science workflows in Search Relevance. Refactored from a custom multi-agent system (`agents/` + `shared/skills/`) into a portable, eval-validated skill set architecture (`skills/`).
 
 **v0.6 Highlights:** 2 independent skills, 4 calibration rounds, 39/39 structural eval assertions, 4 independent expert reviews (DS Lead, PM Lead, Principal AI Engineer, IC9 Search SME).
